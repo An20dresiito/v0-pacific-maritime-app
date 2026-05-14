@@ -33,38 +33,41 @@ export function Header() {
   ]
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-b border-border">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-b border-border shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-18">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
-            <Image
-              src="/images/pacificconnect-logo.png"
-              alt="PacificConnect Logo"
-              width={56}
-              height={56}
-              className="w-12 h-12 md:w-14 md:h-14 object-contain"
-              priority
-            />
-            <div className="flex flex-col">
-              <span className="text-base md:text-lg font-bold text-primary leading-tight tracking-tight">
+        <div className="flex items-center justify-between h-20 md:h-24">
+          {/* Logo - más grande y separado */}
+          <Link href="/" className="flex items-center gap-4 shrink-0">
+            <div className="relative">
+              <Image
+                src="/images/pacificconnect-logo.png"
+                alt="PacificConnect Logo"
+                width={72}
+                height={72}
+                className="w-14 h-14 md:w-[72px] md:h-[72px] object-contain"
+                priority
+              />
+            </div>
+            <div className="flex flex-col hidden md:flex">
+              <span className="text-lg lg:text-xl font-bold text-primary leading-tight tracking-tight">
                 PacificConnect
               </span>
-              <span className="text-[10px] text-muted-foreground -mt-0.5 hidden sm:block">
+              <span className="text-xs text-muted-foreground">
                 Estamos Unidos
               </span>
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-6">
+          {/* Desktop Navigation - separado con más espacio */}
+          <nav className="hidden lg:flex items-center gap-8 ml-12">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative group"
               >
                 {link.label}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
               </Link>
             ))}
           </nav>
