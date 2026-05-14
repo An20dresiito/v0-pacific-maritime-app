@@ -17,8 +17,21 @@ export const metadata: Metadata = {
   description: 'Plataforma digital que conecta el Chocó, Nariño, Cauca y Valle del Cauca por vía marítima. Reserva tu cupo en embarcaciones verificadas y seguras.',
   generator: 'v0.app',
   icons: {
-    icon: '/icon.png',
-    apple: '/icon.png',
+    icon: [
+      {
+        url: '/icon-light-32x32.png',
+        media: '(prefers-color-scheme: light)',
+      },
+      {
+        url: '/icon-dark-32x32.png',
+        media: '(prefers-color-scheme: dark)',
+      },
+      {
+        url: '/icon.svg',
+        type: 'image/svg+xml',
+      },
+    ],
+    apple: '/apple-icon.png',
   },
 }
 
