@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Menu, X, Anchor, User, Globe, ChevronDown } from "lucide-react"
+import Image from "next/image"
+import { Menu, X, User, Globe, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -36,16 +37,21 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-18">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-              <Anchor className="w-5 h-5 text-primary-foreground" />
-            </div>
+          <Link href="/" className="flex items-center gap-3">
+            <Image
+              src="/logo.png"
+              alt="PacificConnect Logo"
+              width={52}
+              height={52}
+              className="w-11 h-11 md:w-13 md:h-13"
+              priority
+            />
             <div className="flex flex-col">
               <span className="text-lg font-bold text-foreground leading-tight tracking-tight">
                 PACIFIC<span className="text-primary">CONNECT</span>
               </span>
               <span className="text-[10px] text-muted-foreground -mt-0.5 hidden sm:block">
-                Conectando el Pacífico Colombiano
+                Estamos Unidos
               </span>
             </div>
           </Link>

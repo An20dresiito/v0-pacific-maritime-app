@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { Anchor, MapPin, Phone, Mail, Clock, Facebook, Instagram, Twitter, Youtube } from "lucide-react"
+import Image from "next/image"
+import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Twitter, Youtube } from "lucide-react"
 
 const footerLinks = {
   departamentos: [
@@ -47,16 +48,20 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 lg:gap-12">
           {/* Brand Column */}
           <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-6">
-              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-                <Anchor className="w-6 h-6 text-primary-foreground" />
-              </div>
+            <Link href="/" className="flex items-center gap-3 mb-6">
+              <Image
+                src="/logo.png"
+                alt="PacificConnect Logo"
+                width={56}
+                height={56}
+                className="w-14 h-14 brightness-0 invert"
+              />
               <div className="flex flex-col">
                 <span className="text-xl font-bold text-background leading-tight">
                   PACIFIC<span className="text-primary">CONNECT</span>
                 </span>
                 <span className="text-xs text-background/60 -mt-0.5">
-                  Conectando el Pacífico Colombiano
+                  Estamos Unidos
                 </span>
               </div>
             </Link>
