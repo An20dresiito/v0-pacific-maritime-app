@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { Search, MapPin, Calendar, Users, ChevronDown, Shield, Clock, Anchor, Waves } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -45,18 +46,24 @@ export function HeroSection() {
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-10">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-primary/20 backdrop-blur-sm border border-primary/30 rounded-full px-4 py-2 mb-6">
-            <Waves className="w-4 h-4 text-primary-foreground" />
-            <span className="text-sm font-medium text-primary-foreground">
-              Conectando el Pacífico Colombiano
+          {/* Logo Badge */}
+          <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2 mb-8">
+            <Image
+              src="/images/pacificconnect-logo.png"
+              alt="PacificConnect"
+              width={40}
+              height={40}
+              className="w-10 h-10 object-contain"
+            />
+            <span className="text-sm font-semibold text-white">
+              Estamos Unidos
             </span>
           </div>
 
           {/* Main Heading */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight text-balance">
             Tu viaje seguro por el
-            <span className="block text-primary">Pacífico</span>
+            <span className="block text-accent">Pacífico</span>
           </h1>
 
           <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto mb-8 text-pretty">

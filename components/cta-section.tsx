@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { Send, CheckCircle, Loader2, Smartphone, Bell, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -41,11 +42,17 @@ export function CTASection() {
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/5 rounded-full translate-x-1/3 translate-y-1/3" />
 
       <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6">
-          <span className="w-2 h-2 bg-accent rounded-full animate-pulse" />
+        {/* Badge with Logo */}
+        <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2 mb-6">
+          <Image
+            src="/images/pacificconnect-logo.png"
+            alt="PacificConnect"
+            width={36}
+            height={36}
+            className="w-9 h-9 object-contain"
+          />
           <span className="text-sm font-medium text-white">
-            Descarga la App - Disponible pronto
+            App Móvil - Disponible pronto
           </span>
         </div>
 

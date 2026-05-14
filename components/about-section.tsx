@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { Shield, Users, Anchor, Target, Eye, Smartphone } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -55,15 +56,21 @@ export function AboutSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-            <Anchor className="w-4 h-4" />
-            Nosotros
-          </span>
+          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+            <Image
+              src="/images/pacificconnect-logo.png"
+              alt="PacificConnect"
+              width={32}
+              height={32}
+              className="w-8 h-8 object-contain"
+            />
+            <span>Nosotros</span>
+          </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 text-balance">
-            Conectando el Pacífico
+            Estamos Unidos
           </h2>
           <p className="text-muted-foreground max-w-3xl mx-auto text-pretty">
-            <strong>PACIFICCONNECT</strong> es una plataforma tecnológica que centraliza la oferta 
+            <strong>PacificConnect</strong> es una plataforma tecnológica que centraliza la oferta 
             de transporte marítimo en el Pacífico colombiano, uniendo Chocó, Nariño, Cauca y 
             Valle del Cauca por vía marítima.
           </p>
@@ -137,7 +144,7 @@ export function AboutSection() {
         {/* Target Audiences */}
         <div>
           <h3 className="text-2xl font-bold text-foreground text-center mb-8">
-            ¿Para Quién es PACIFICCONNECT?
+            ¿Para Quién es PacificConnect?
           </h3>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {audiences.map((audience, idx) => (
