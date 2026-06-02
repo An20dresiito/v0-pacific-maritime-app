@@ -96,12 +96,14 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button variant="ghost" size="sm" className="gap-2">
-              <User className="w-4 h-4" />
-              Iniciar Sesión
+            <Button variant="ghost" size="sm" className="gap-2" asChild>
+              <Link href="/iniciar-sesion">
+                <User className="w-4 h-4" />
+                Iniciar Sesión
+              </Link>
             </Button>
-            <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-              Reservar Cupo
+            <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
+              <Link href="/registro">Reservar Cupo</Link>
             </Button>
           </div>
 
@@ -148,12 +150,16 @@ export function Header() {
             </div>
             
             <div className="pt-2 space-y-3">
-              <Button variant="outline" className="w-full gap-2">
-                <User className="w-4 h-4" />
-                Iniciar Sesión
+              <Button variant="outline" className="w-full gap-2" asChild>
+                <Link href="/iniciar-sesion" onClick={() => setIsMenuOpen(false)}>
+                  <User className="w-4 h-4" />
+                  Iniciar Sesión
+                </Link>
               </Button>
-              <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
-                Reservar Cupo
+              <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
+                <Link href="/registro" onClick={() => setIsMenuOpen(false)}>
+                  Reservar Cupo
+                </Link>
               </Button>
             </div>
           </div>
