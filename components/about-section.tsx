@@ -1,148 +1,176 @@
 "use client"
 
-import { Award, Leaf, Heart, Shield, Users, Anchor } from "lucide-react"
+import Image from "next/image"
+import { Shield, Users, Anchor, Target, Eye, Smartphone } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-const values = [
+const objectives = [
   {
-    icon: Leaf,
-    title: "Sostenibilidad",
-    description: "Comprometidos con la conservación del ecosistema marino y las comunidades locales.",
+    icon: Smartphone,
+    title: "Digitalización",
+    description: "Transformar el sistema de transporte marítimo tradicional con tecnología accesible.",
   },
   {
     icon: Shield,
-    title: "Seguridad",
-    description: "Embarcaciones certificadas, tripulación capacitada y protocolos estrictos en cada viaje.",
-  },
-  {
-    icon: Heart,
-    title: "Pasión",
-    description: "Amamos el Pacífico colombiano y queremos compartir su magia contigo.",
+    title: "Transparencia",
+    description: "Garantizar que cada turno esté vinculado a una lancha verificada y segura.",
   },
   {
     icon: Users,
-    title: "Comunidad",
-    description: "Trabajamos de la mano con las comunidades costeras para un turismo responsable.",
+    title: "Conectividad",
+    description: "Unir comunidades y fortalecer el turismo regional del Pacífico colombiano.",
+  },
+  {
+    icon: Target,
+    title: "Eficiencia",
+    description: "Optimizar tiempos, asegurar cupos y mejorar la logística de viajes.",
   },
 ]
 
-const certifications = [
-  { name: "RNT Certificado", icon: Award },
-  { name: "Turismo Sostenible", icon: Leaf },
-  { name: "Seguridad Marítima", icon: Shield },
+const audiences = [
+  {
+    title: "Habitantes Locales",
+    description: "Personas que usan lanchas frecuentemente para movilizarse entre comunidades por motivos personales o laborales.",
+    icon: Users,
+  },
+  {
+    title: "Turistas",
+    description: "Nacionales e internacionales que buscan explorar el Pacífico de forma segura y organizada.",
+    icon: Eye,
+  },
+  {
+    title: "Comerciantes",
+    description: "Viajeros frecuentes que necesitan optimizar tiempos y asegurar cupos para sus actividades.",
+    icon: Target,
+  },
+  {
+    title: "Operadores",
+    description: "Empresas y propietarios de lanchas que gestionan reservas y organizan pasajeros.",
+    icon: Anchor,
+  },
 ]
 
 export function AboutSection() {
   return (
-    <section id="nosotros" className="py-20 bg-muted">
+    <section id="nosotros" className="py-20 bg-muted/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Image Grid */}
-          <div className="relative">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-4">
-                <div className="rounded-2xl overflow-hidden aspect-[4/5]">
-                  <img
-                    src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=800&auto=format&fit=crop"
-                    alt="Ballena jorobada"
-                    className="w-full h-full object-cover"
-                  />
+        {/* Section Header */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+            <Image
+              src="/images/pacificconnect-logo.png"
+              alt="PacificConnect"
+              width={32}
+              height={32}
+              className="w-8 h-8 object-contain"
+            />
+            <span>Nosotros</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 text-balance">
+            Estamos Unidos
+          </h2>
+          <p className="text-muted-foreground max-w-3xl mx-auto text-pretty">
+            <strong>PacificConnect</strong> es una plataforma tecnológica que centraliza la oferta 
+            de transporte marítimo en el Pacífico colombiano, uniendo Chocó, Nariño, Cauca y 
+            Valle del Cauca por vía marítima.
+          </p>
+        </div>
+
+        {/* Mission */}
+        <div className="bg-card rounded-3xl border border-border p-8 md:p-12 mb-12">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h3 className="text-2xl font-bold text-foreground mb-4">
+                Nuestra Misión
+              </h3>
+              <p className="text-muted-foreground mb-6 leading-relaxed text-pretty">
+                Ofrecer a locales y turistas un mecanismo confiable y ágil para asegurar 
+                su cupo en embarcaciones desde su lugar de origen, garantizando que cada 
+                turno esté vinculado a una lancha verificada y segura, fortaleciendo la 
+                confianza en el transporte local.
+              </p>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Shield className="w-4 h-4 text-secondary" />
+                  <span>100% Verificado</span>
                 </div>
-                <div className="rounded-2xl overflow-hidden aspect-square">
-                  <img
-                    src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=800&auto=format&fit=crop"
-                    alt="Playa del Pacífico"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
-              <div className="space-y-4 pt-8">
-                <div className="rounded-2xl overflow-hidden aspect-square">
-                  <img
-                    src="https://images.unsplash.com/photo-1545579133-99bb5ab189bd?q=80&w=800&auto=format&fit=crop"
-                    alt="Manglares"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="rounded-2xl overflow-hidden aspect-[4/5]">
-                  <img
-                    src="https://images.unsplash.com/photo-1516815231560-8f41ec531527?q=80&w=800&auto=format&fit=crop"
-                    alt="Comunidad local"
-                    className="w-full h-full object-cover"
-                  />
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Users className="w-4 h-4 text-secondary" />
+                  <span>+50K Viajeros</span>
                 </div>
               </div>
             </div>
-
-            {/* Experience Badge */}
-            <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground rounded-2xl p-6 shadow-xl">
-              <div className="flex items-center gap-3">
-                <Anchor className="w-10 h-10" />
-                <div>
-                  <div className="text-3xl font-bold">10+</div>
-                  <div className="text-sm opacity-90">Años de experiencia</div>
-                </div>
+            <div className="relative">
+              <div className="aspect-video rounded-2xl overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=800&auto=format&fit=crop"
+                  alt="Pacífico colombiano"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="absolute -bottom-4 -right-4 bg-primary text-primary-foreground rounded-xl p-4 shadow-lg">
+                <div className="text-2xl font-bold">4</div>
+                <div className="text-sm opacity-90">Departamentos</div>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Content */}
-          <div>
-            <span className="inline-block text-sm font-semibold text-primary uppercase tracking-wider mb-2">
-              Nuestra Historia
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 text-balance">
-              Navegando con Propósito
-            </h2>
-
-            <p className="text-muted-foreground mb-6 leading-relaxed">
-              Nacimos en Buenaventura con un sueño: conectar a los viajeros con la magia 
-              inexplorada del Pacífico colombiano. Lo que comenzó como una pequeña lancha 
-              familiar, hoy es la red de transporte marítimo turístico más confiable de la región.
-            </p>
-
-            <p className="text-muted-foreground mb-8 leading-relaxed">
-              Creemos en un turismo que beneficia a todos: viajeros que descubren paraísos, 
-              comunidades que prosperan y un océano que seguimos protegiendo. Cada viaje 
-              con nosotros es una inversión en el futuro del Pacífico.
-            </p>
-
-            {/* Values Grid */}
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              {values.map((value) => (
-                <div key={value.title} className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <value.icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground text-sm mb-1">
-                      {value.title}
-                    </h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      {value.description}
-                    </p>
-                  </div>
+        {/* Objectives */}
+        <div className="mb-16">
+          <h3 className="text-2xl font-bold text-foreground text-center mb-8">
+            Nuestros Objetivos
+          </h3>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {objectives.map((objective, idx) => (
+              <div
+                key={idx}
+                className="bg-card rounded-2xl border border-border p-6 text-center hover:shadow-lg transition-shadow"
+              >
+                <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <objective.icon className="w-7 h-7 text-primary" />
                 </div>
-              ))}
-            </div>
-
-            {/* Certifications */}
-            <div className="flex flex-wrap gap-4 mb-8">
-              {certifications.map((cert) => (
-                <div
-                  key={cert.name}
-                  className="flex items-center gap-2 bg-card border border-border rounded-full px-4 py-2"
-                >
-                  <cert.icon className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-foreground">{cert.name}</span>
-                </div>
-              ))}
-            </div>
-
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-              Conoce Nuestra Historia Completa
-            </Button>
+                <h4 className="text-lg font-semibold text-foreground mb-2">
+                  {objective.title}
+                </h4>
+                <p className="text-sm text-muted-foreground">
+                  {objective.description}
+                </p>
+              </div>
+            ))}
           </div>
+        </div>
+
+        {/* Target Audiences */}
+        <div>
+          <h3 className="text-2xl font-bold text-foreground text-center mb-8">
+            ¿Para Quién es PacificConnect?
+          </h3>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {audiences.map((audience, idx) => (
+              <div
+                key={idx}
+                className="bg-card rounded-2xl border border-border p-6 hover:border-primary/50 transition-colors"
+              >
+                <div className="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center mb-4">
+                  <audience.icon className="w-6 h-6 text-secondary" />
+                </div>
+                <h4 className="text-lg font-semibold text-foreground mb-2">
+                  {audience.title}
+                </h4>
+                <p className="text-sm text-muted-foreground">
+                  {audience.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="text-center mt-12">
+          <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
+            Conoce Más Sobre Nosotros
+          </Button>
         </div>
       </div>
     </section>
