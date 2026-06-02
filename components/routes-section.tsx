@@ -1,6 +1,7 @@
 "use client"
 
-import { Ship, Clock, Users, ShieldCheck, ArrowRight, Anchor, CheckCircle, Luggage } from "lucide-react"
+import Link from "next/link"
+import { Ship, Clock, Users, ShieldCheck, ArrowRight, Anchor, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const routes = [
@@ -238,10 +239,18 @@ export function RoutesSection() {
         </div>
 
         {/* View All */}
-        <div className="text-center mt-10">
-          <Button variant="outline" size="lg">
-            Ver Todas las Rutas
-            <ArrowRight className="w-4 h-4 ml-2" />
+        <div className="text-center mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Button variant="outline" size="lg" asChild>
+            <Link href="/embarcaciones">
+              <Ship className="w-4 h-4 mr-2" />
+              Ver Embarcaciones Disponibles
+            </Link>
+          </Button>
+          <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
+            <Link href="/embarcaciones">
+              Reservar Cupo
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Link>
           </Button>
         </div>
       </div>

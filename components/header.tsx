@@ -24,12 +24,12 @@ export function Header() {
   const [currentLang, setCurrentLang] = useState("es")
 
   const navLinks = [
-    { href: "#", label: "Inicio" },
-    { href: "#rutas", label: "Rutas" },
-    { href: "#destinos", label: "Destinos" },
-    { href: "#reservas", label: "Reservas" },
-    { href: "#operadores", label: "Operadores" },
-    { href: "#nosotros", label: "Nosotros" },
+    { href: "/", label: "Inicio" },
+    { href: "/#rutas", label: "Rutas" },
+    { href: "/#destinos", label: "Destinos" },
+    { href: "/embarcaciones", label: "Embarcaciones" },
+    { href: "/#operadores", label: "Operadores" },
+    { href: "/#nosotros", label: "Nosotros" },
   ]
 
   return (
