@@ -1,8 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
-import { Send, CheckCircle, Loader2, Smartphone, Bell, Shield } from "lucide-react"
+import { Send, CheckCircle, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export function CTASection() {
@@ -42,28 +41,22 @@ export function CTASection() {
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/5 rounded-full translate-x-1/3 translate-y-1/3" />
 
       <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Badge with Logo */}
-        <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2 mb-6">
-          <Image
-            src="/images/pacificconnect-logo.png"
-            alt="PacificConnect"
-            width={36}
-            height={36}
-            className="w-9 h-9 object-contain"
-          />
+        {/* Badge */}
+        <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6">
+          <span className="w-2 h-2 bg-accent rounded-full animate-pulse" />
           <span className="text-sm font-medium text-white">
-            App Móvil - Disponible pronto
+            Ofertas exclusivas para suscriptores
           </span>
         </div>
 
         {/* Heading */}
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 text-balance">
-          Reserva tu Cupo Desde Cualquier Lugar
+        <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 text-balance">
+          Comienza Tu Aventura en el Pacífico
         </h2>
 
         <p className="text-lg text-white/90 max-w-2xl mx-auto mb-10 text-pretty">
-          Suscríbete para recibir notificaciones cuando lancemos la app móvil, 
-          ofertas exclusivas y alertas de nuevas rutas disponibles.
+          Suscríbete a nuestro boletín y recibe las mejores ofertas, 
+          novedades sobre temporadas de ballenas y descuentos exclusivos.
         </p>
 
         {/* Newsletter Form */}
@@ -93,12 +86,12 @@ export function CTASection() {
               ) : isSuccess ? (
                 <>
                   <CheckCircle className="w-5 h-5 mr-2" />
-                  Registrado
+                  ¡Suscrito!
                 </>
               ) : (
                 <>
                   <Send className="w-5 h-5 mr-2" />
-                  Notificarme
+                  Suscribirme
                 </>
               )}
             </Button>
@@ -113,25 +106,19 @@ export function CTASection() {
         {/* Features */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-16">
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-            <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <Smartphone className="w-6 h-6 text-white" />
-            </div>
-            <h3 className="font-semibold text-white mb-1">App Móvil</h3>
-            <p className="text-sm text-white/70">Reserva desde tu celular</p>
+            <div className="text-3xl mb-2">🎁</div>
+            <h3 className="font-semibold text-white mb-1">10% de Descuento</h3>
+            <p className="text-sm text-white/70">En tu primera reserva</p>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-            <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <Bell className="w-6 h-6 text-white" />
-            </div>
-            <h3 className="font-semibold text-white mb-1">Notificaciones</h3>
-            <p className="text-sm text-white/70">Alertas en tiempo real</p>
+            <div className="text-3xl mb-2">🐋</div>
+            <h3 className="font-semibold text-white mb-1">Alertas de Ballenas</h3>
+            <p className="text-sm text-white/70">Avistamientos en tiempo real</p>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-            <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <Shield className="w-6 h-6 text-white" />
-            </div>
-            <h3 className="font-semibold text-white mb-1">100% Seguro</h3>
-            <p className="text-sm text-white/70">Embarcaciones verificadas</p>
+            <div className="text-3xl mb-2">✨</div>
+            <h3 className="font-semibold text-white mb-1">Ofertas Flash</h3>
+            <p className="text-sm text-white/70">Solo para suscriptores</p>
           </div>
         </div>
       </div>

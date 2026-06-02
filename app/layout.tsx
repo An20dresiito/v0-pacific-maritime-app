@@ -13,8 +13,8 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: 'PACIFICCONNECT | Transporte Marítimo del Pacífico Colombiano',
-  description: 'Plataforma digital que conecta el Chocó, Nariño, Cauca y Valle del Cauca por vía marítima. Reserva tu cupo en embarcaciones verificadas y seguras.',
+  title: 'Pacífico Voyages | Viajes Marítimos Colombia',
+  description: 'Descubre el Pacífico colombiano con nuestras rutas marítimas. Avistamiento de ballenas, playas vírgenes, y experiencias únicas en Buenaventura, Nuquí, Bahía Solano y más.',
   generator: 'v0.app',
   icons: {
     icon: [

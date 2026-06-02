@@ -2,112 +2,68 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
-import { Menu, X, User, Globe, ChevronDown } from "lucide-react"
+import { Menu, X, Anchor, User, Phone } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
-const languages = [
-  { code: "es", name: "Español" },
-  { code: "en", name: "English" },
-  { code: "fr", name: "Français" },
-  { code: "pt", name: "Português" },
-]
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [currentLang, setCurrentLang] = useState("es")
 
   const navLinks = [
-    { href: "#", label: "Inicio" },
-    { href: "#rutas", label: "Rutas" },
     { href: "#destinos", label: "Destinos" },
-    { href: "#reservas", label: "Reservas" },
-    { href: "#operadores", label: "Operadores" },
+    { href: "#experiencias", label: "Experiencias" },
+    { href: "#rutas", label: "Rutas" },
     { href: "#nosotros", label: "Nosotros" },
+    { href: "#contacto", label: "Contacto" },
   ]
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-b border-border shadow-sm">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 md:h-24">
-          {/* Logo - más grande y separado */}
-          <Link href="/" className="flex items-center gap-4 shrink-0">
-            <div className="relative">
-              <Image
-                src="/images/pacificconnect-logo.png"
-                alt="PacificConnect Logo"
-                width={72}
-                height={72}
-                className="w-14 h-14 md:w-[72px] md:h-[72px] object-contain"
-                priority
-              />
+        <div className="flex items-center justify-between h-16 md:h-20">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+              <Anchor className="w-5 h-5 text-primary-foreground" />
             </div>
-            <div className="flex flex-col hidden md:flex">
-              <span className="text-lg lg:text-xl font-bold text-primary leading-tight tracking-tight">
-                PacificConnect
+            <div className="flex flex-col">
+              <span className="font-serif text-lg font-bold text-foreground leading-tight">
+                Pacífico
               </span>
-              <span className="text-xs text-muted-foreground">
-                Estamos Unidos
-              </span>
+              <span className="text-xs text-muted-foreground -mt-1">Voyages</span>
             </div>
           </Link>
 
-          {/* Desktop Navigation - separado con más espacio */}
-          <nav className="hidden lg:flex items-center gap-8 ml-12">
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative group"
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
               </Link>
             ))}
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden lg:flex items-center gap-3">
-            {/* Language Selector */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-1.5">
-                  <Globe className="w-4 h-4" />
-                  <span className="uppercase text-xs">{currentLang}</span>
-                  <ChevronDown className="w-3 h-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {languages.map((lang) => (
-                  <DropdownMenuItem
-                    key={lang.code}
-                    onClick={() => setCurrentLang(lang.code)}
-                    className={currentLang === lang.code ? "bg-muted" : ""}
-                  >
-                    {lang.name}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
+          <div className="hidden md:flex items-center gap-3">
             <Button variant="ghost" size="sm" className="gap-2">
+              <Phone className="w-4 h-4" />
+              <span className="text-sm">+57 312 456 7890</span>
+            </Button>
+            <Button variant="outline" size="sm" className="gap-2">
               <User className="w-4 h-4" />
               Iniciar Sesión
             </Button>
             <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-              Reservar Cupo
+              Reservar Ahora
             </Button>
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden p-2 text-foreground"
+            className="md:hidden p-2 text-foreground"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -118,7 +74,7 @@ export function Header() {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden bg-card border-t border-border">
+        <div className="md:hidden bg-background border-t border-border">
           <div className="px-4 py-4 space-y-3">
             {navLinks.map((link) => (
               <Link
@@ -130,30 +86,13 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            
-            {/* Mobile Language Selector */}
-            <div className="flex items-center gap-2 py-2 border-t border-border pt-4">
-              <Globe className="w-4 h-4 text-muted-foreground" />
-              <select
-                value={currentLang}
-                onChange={(e) => setCurrentLang(e.target.value)}
-                className="bg-transparent text-sm text-muted-foreground focus:outline-none"
-              >
-                {languages.map((lang) => (
-                  <option key={lang.code} value={lang.code}>
-                    {lang.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            <div className="pt-2 space-y-3">
+            <div className="pt-4 space-y-3 border-t border-border">
               <Button variant="outline" className="w-full gap-2">
                 <User className="w-4 h-4" />
                 Iniciar Sesión
               </Button>
               <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
-                Reservar Cupo
+                Reservar Ahora
               </Button>
             </div>
           </div>
