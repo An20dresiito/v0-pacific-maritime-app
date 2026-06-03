@@ -22,10 +22,10 @@ export async function signUp(formData: FormData) {
   const password = formData.get("password") as string
   const nombre_completo = formData.get("nombre_completo") as string
   const telefono = formData.get("telefono") as string
-  const puerto_origen = formData.get("puerto_origen") as string
+  const puerto_frecuente = formData.get("puerto_frecuente") as string
 
   // Validaciones
-  if (!email || !password || !nombre_completo || !telefono || !puerto_origen) {
+  if (!email || !password || !nombre_completo || !telefono || !puerto_frecuente) {
     return { error: "Todos los campos son obligatorios" }
   }
 
@@ -44,7 +44,7 @@ export async function signUp(formData: FormData) {
   }
 
   // Validar puerto
-  if (!PUERTOS_VALIDOS.includes(puerto_origen)) {
+  if (!PUERTOS_VALIDOS.includes(puerto_frecuente)) {
     return { error: "Puerto de origen no válido" }
   }
 
@@ -64,7 +64,7 @@ export async function signUp(formData: FormData) {
       data: {
         nombre_completo,
         telefono: telefonoLimpio,
-        puerto_origen,
+        puerto_frecuente,
       },
     },
   })
@@ -122,14 +122,14 @@ export async function updateProfile(formData: FormData) {
 
   const nombre_completo = formData.get("nombre_completo") as string
   const telefono = formData.get("telefono") as string
-  const puerto_origen = formData.get("puerto_origen") as string
+  const puerto_frecuente = formData.get("puerto_frecuente") as string
 
   // Validaciones
-  if (!nombre_completo || !telefono || !puerto_origen) {
+  if (!nombre_completo || !telefono || !puerto_frecuente) {
     return { error: "Todos los campos son obligatorios" }
   }
 
-  if (!PUERTOS_VALIDOS.includes(puerto_origen)) {
+  if (!PUERTOS_VALIDOS.includes(puerto_frecuente)) {
     return { error: "Puerto de origen no válido" }
   }
 
@@ -143,8 +143,7 @@ export async function updateProfile(formData: FormData) {
     .update({
       nombre_completo,
       telefono: telefonoLimpio,
-      puerto_origen,
-      updated_at: new Date().toISOString(),
+      puerto_frecuente,
     })
     .eq("id", user.id)
 

@@ -1,18 +1,19 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { 
   User, Mail, Phone, Anchor, MapPin, Calendar, Edit2, 
   Save, X, Loader2, CheckCircle, Ship, Waves, LogOut,
-  AlertCircle, ArrowLeft
+  AlertCircle, ArrowLeft, Ticket, Clock, QrCode, AlertTriangle
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { updateProfile, signOut } from "@/lib/actions/auth"
+import { getMisReservas, cancelarReserva } from "@/lib/actions/reservas"
 import type { User as SupabaseUser } from "@supabase/supabase-js"
 
 const PUERTOS = [
@@ -31,10 +32,29 @@ interface Profile {
   id: string
   nombre_completo: string | null
   telefono: string | null
-  puerto_origen: string | null
+  puerto_frecuente: string | null
   avatar_url: string | null
-  created_at: string
+  creado_en: string
   updated_at: string
+}
+
+interface Reserva {
+  id: string
+  codigo: string
+  asientos: number
+  asientos_seleccionados: string[] | null
+  precio_total: number
+  estado: string
+  created_at: string
+  viaje: {
+    origen: string
+    destino: string
+    fecha: string
+    hora_salida: string
+    hora_llegada: string
+    nombre_embarcacion: string
+    tipo_embarcacion: string
+  }
 }
 
 interface ProfileClientProps {
@@ -43,11 +63,14 @@ interface ProfileClientProps {
 }
 
 export function ProfileClient({ user, profile }: ProfileClientProps) {
+  const [activeTab, setActiveTab] = useState<"perfil" | "viajes">("perfil")
   const [isEditing, setIsEditing] = useState(false)
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
-  const [puerto, setPuerto] = useState(profile?.puerto_origen || "")
+  const [puerto, setPuerto] = useState(profile?.puerto_frecuente || "")
+  const [reservas, setReservas] = useState<Reserva[]>([])
+  const [loadingReservas, setLoadingReservas] = useState(false)
 
   const memberSince = user.created_at 
     ? new Date(user.created_at).toLocaleDateString("es-CO", { 
@@ -56,12 +79,41 @@ export function ProfileClient({ user, profile }: ProfileClientProps) {
       })
     : "Desconocido"
 
+  // Load reservas when tab changes
+  useEffect(() => {
+    if (activeTab === "viajes" && reservas.length === 0) {
+      loadReservas()
+    }
+  }, [activeTab])
+
+  async function loadReservas() {
+    setLoadingReservas(true)
+    const result = await getMisReservas()
+    if (result.reservas) {
+      setReservas(result.reservas as Reserva[])
+    }
+    setLoadingReservas(false)
+  }
+
+  async function handleCancelar(reservaId: string) {
+    if (!confirm("¿Estás seguro de que deseas cancelar esta reserva?")) return
+    
+    startTransition(async () => {
+      const result = await cancelarReserva(reservaId)
+      if (result.error) {
+        alert(result.error)
+      } else {
+        loadReservas()
+      }
+    })
+  }
+
   async function handleUpdate(formData: FormData) {
     setError(null)
     setSuccess(false)
     
     if (puerto) {
-      formData.set("puerto_origen", puerto)
+      formData.set("puerto_frecuente", puerto)
     }
 
     startTransition(async () => {

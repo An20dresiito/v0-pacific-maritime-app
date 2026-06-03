@@ -1,8 +1,8 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, useTransition } from "react"
 import Link from "next/link"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
 import {
   ArrowLeft,
   ArrowRight,
@@ -25,11 +25,18 @@ import {
   Pill,
   Droplets,
   Phone,
+  Loader2,
+  Ticket,
+  QrCode,
+  Calendar,
+  User,
+  Download,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { confirmarReserva } from "@/lib/actions/reservas"
 
 // --- Vessel type configuration (varies seat map + luggage) ---
 
@@ -203,17 +210,37 @@ function parsePrice(raw: string): number {
 
 // --- Main client component ---
 
+type ReservaConfirmada = {
+  codigo: string
+  viaje: {
+    origen: string
+    destino: string
+    fecha: string
+    hora_salida: string
+    hora_llegada: string
+    nombre_embarcacion: string
+    tipo_embarcacion: string
+  }
+  asientos: number
+  asientos_seleccionados: string[]
+  precio_total: number
+}
+
 export function ReservaClient() {
   const params = useSearchParams()
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
 
+  const viajeId = params.get("viaje_id") || ""
   const routeName = params.get("route") || "Ruta del Pacífico"
-  const from = params.get("from") || "Buenaventura"
-  const to = params.get("to") || "Destino Pacífico"
-  const vesselName = params.get("vessel") || "Embarcación PacificConnect"
-  const typeRaw = params.get("type") || "Lancha Rápida"
-  const departure = params.get("departure") || "06:00"
-  const arrival = params.get("arrival") || "—"
-  const priceRaw = params.get("price") || "180.000"
+  const from = params.get("from") || params.get("origen") || "Buenaventura"
+  const to = params.get("to") || params.get("destino") || "Destino Pacífico"
+  const vesselName = params.get("vessel") || params.get("embarcacion") || "Embarcación PacificConnect"
+  const typeRaw = params.get("type") || params.get("tipo") || "Lancha Rápida"
+  const departure = params.get("departure") || params.get("hora_salida") || "06:00"
+  const arrival = params.get("arrival") || params.get("hora_llegada") || "—"
+  const priceRaw = params.get("price") || params.get("precio") || "180000"
+  const fecha = params.get("fecha") || new Date().toISOString().split("T")[0]
 
   const typeKey = normalizeType(typeRaw)
   const config = vesselConfig[typeKey]
@@ -223,6 +250,8 @@ export function ReservaClient() {
 
   const [selectedSeats, setSelectedSeats] = useState<string[]>([])
   const [checkedBags, setCheckedBags] = useState(0)
+  const [error, setError] = useState<string | null>(null)
+  const [reservaConfirmada, setReservaConfirmada] = useState<ReservaConfirmada | null>(null)
 
   // Deterministic sailor message based on route name
   const sailorMessage =
@@ -246,6 +275,226 @@ export function ReservaClient() {
   const precautions = [...precautionsBase, ...precautionsByLength[config.tripLength]]
 
   const aisleIndex = Math.floor(config.cols / 2)
+
+  const handleConfirmarReserva = () => {
+    if (passengers === 0) return
+    setError(null)
+
+    startTransition(async () => {
+      const result = await confirmarReserva({
+        viaje_id: viajeId,
+        asientos: passengers,
+        asientos_seleccionados: selectedSeats,
+        precio_total: total,
+      })
+
+      if (result.error) {
+        setError(result.error)
+        return
+      }
+
+      if (result.reserva) {
+        setReservaConfirmada({
+          codigo: result.reserva.codigo,
+          viaje: {
+            origen: from,
+            destino: to,
+            fecha,
+            hora_salida: departure,
+            hora_llegada: arrival,
+            nombre_embarcacion: vesselName,
+            tipo_embarcacion: typeRaw,
+          },
+          asientos: passengers,
+          asientos_seleccionados: selectedSeats,
+          precio_total: total,
+        })
+      }
+    })
+  }
+
+  // --- Render ticket digital if reservation confirmed ---
+  if (reservaConfirmada) {
+    return (
+      <>
+        <Header />
+        <main className="min-h-screen bg-background pt-24 pb-20">
+          <div className="max-w-2xl mx-auto px-4 sm:px-6">
+            {/* Success banner */}
+            <div className="text-center mb-8">
+              <div className="w-20 h-20 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                <CheckCircle className="w-10 h-10 text-green-600" />
+              </div>
+              <h1 className="text-3xl font-bold text-foreground mb-2">Reserva Confirmada</h1>
+              <p className="text-muted-foreground">
+                Tu cupo ha sido reservado exitosamente. Guarda este ticket para abordar.
+              </p>
+            </div>
+
+            {/* Digital ticket */}
+            <div className="bg-card border-2 border-primary rounded-3xl overflow-hidden shadow-xl">
+              {/* Ticket header */}
+              <div className="bg-primary text-primary-foreground p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <Ship className="w-8 h-8" />
+                    <div>
+                      <div className="font-bold text-lg">PacificConnect</div>
+                      <div className="text-xs text-primary-foreground/80">Ticket de Embarque</div>
+                    </div>
+                  </div>
+                  <Badge className="bg-primary-foreground/20 text-primary-foreground text-sm px-3 py-1">
+                    {reservaConfirmada.viaje.tipo_embarcacion}
+                  </Badge>
+                </div>
+
+                {/* Route display */}
+                <div className="flex items-center justify-between gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold">{reservaConfirmada.viaje.origen}</div>
+                    <div className="text-xs text-primary-foreground/80">Origen</div>
+                  </div>
+                  <div className="flex-1 flex items-center justify-center">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full border-2 border-primary-foreground" />
+                      <div className="flex-1 h-0.5 bg-primary-foreground/50 min-w-[60px]" />
+                      <Ship className="w-5 h-5" />
+                      <div className="flex-1 h-0.5 bg-primary-foreground/50 min-w-[60px]" />
+                      <div className="w-3 h-3 rounded-full bg-primary-foreground" />
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold">{reservaConfirmada.viaje.destino}</div>
+                    <div className="text-xs text-primary-foreground/80">Destino</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Ticket body */}
+              <div className="p-6">
+                {/* Code and QR */}
+                <div className="flex items-center justify-between mb-6 pb-6 border-b border-dashed border-border">
+                  <div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                      Código de Reserva
+                    </div>
+                    <div className="text-3xl font-mono font-bold text-primary tracking-wider">
+                      {reservaConfirmada.codigo}
+                    </div>
+                  </div>
+                  <div className="w-20 h-20 bg-muted rounded-lg flex items-center justify-center">
+                    <QrCode className="w-12 h-12 text-muted-foreground" />
+                  </div>
+                </div>
+
+                {/* Trip details grid */}
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="flex items-start gap-3">
+                    <Calendar className="w-5 h-5 text-primary mt-0.5" />
+                    <div>
+                      <div className="text-xs text-muted-foreground">Fecha</div>
+                      <div className="font-semibold text-foreground">
+                        {new Date(reservaConfirmada.viaje.fecha).toLocaleDateString("es-CO", {
+                          weekday: "long",
+                          day: "numeric",
+                          month: "long",
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Clock className="w-5 h-5 text-primary mt-0.5" />
+                    <div>
+                      <div className="text-xs text-muted-foreground">Horario</div>
+                      <div className="font-semibold text-foreground">
+                        {reservaConfirmada.viaje.hora_salida} → {reservaConfirmada.viaje.hora_llegada}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Ship className="w-5 h-5 text-primary mt-0.5" />
+                    <div>
+                      <div className="text-xs text-muted-foreground">Embarcación</div>
+                      <div className="font-semibold text-foreground">
+                        {reservaConfirmada.viaje.nombre_embarcacion}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <User className="w-5 h-5 text-primary mt-0.5" />
+                    <div>
+                      <div className="text-xs text-muted-foreground">Pasajeros</div>
+                      <div className="font-semibold text-foreground">{reservaConfirmada.asientos}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Seats */}
+                <div className="bg-muted/50 rounded-xl p-4 mb-6">
+                  <div className="text-xs text-muted-foreground uppercase tracking-wide mb-2">
+                    Asientos Asignados
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {reservaConfirmada.asientos_seleccionados.map((s) => (
+                      <span
+                        key={s}
+                        className="bg-primary text-primary-foreground text-sm font-bold px-3 py-1.5 rounded-lg"
+                      >
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Total */}
+                <div className="flex items-center justify-between py-4 border-t border-border">
+                  <span className="font-semibold text-foreground">Total Pagado</span>
+                  <span className="text-2xl font-bold text-primary">
+                    ${formatCOP(reservaConfirmada.precio_total)} COP
+                  </span>
+                </div>
+              </div>
+
+              {/* Ticket footer */}
+              <div className="bg-muted/50 px-6 py-4 border-t border-dashed border-border">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <AlertTriangle className="w-4 h-4" />
+                  <span>
+                    Presenta este ticket (impreso o digital) al momento de abordar. Llega al muelle 30 min antes.
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row gap-3 mt-6">
+              <Button variant="outline" className="flex-1 gap-2" asChild>
+                <Link href="/perfil">
+                  <Ticket className="w-4 h-4" />
+                  Ver Mis Viajes
+                </Link>
+              </Button>
+              <Button className="flex-1 gap-2 bg-primary hover:bg-primary/90" asChild>
+                <Link href="/">
+                  <Anchor className="w-4 h-4" />
+                  Volver al Inicio
+                </Link>
+              </Button>
+            </div>
+
+            {/* Sailor message */}
+            <div className="mt-8 bg-accent/15 border border-accent/30 rounded-xl p-4 flex items-center gap-3">
+              <Anchor className="w-8 h-8 text-accent-foreground shrink-0" />
+              <p className="text-sm font-medium text-foreground">
+                {sailorMessage} Nos vemos en el muelle, marinero.
+              </p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </>
+    )
+  }
 
   return (
     <>
@@ -592,10 +841,26 @@ export function ReservaClient() {
                 <Button
                   className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                   size="lg"
-                  disabled={passengers === 0}
+                  disabled={passengers === 0 || isPending}
+                  onClick={handleConfirmarReserva}
                 >
-                  {passengers === 0 ? "Elige un asiento" : "Confirmar reserva"}
+                  {isPending ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Procesando...
+                    </>
+                  ) : passengers === 0 ? (
+                    "Elige un asiento"
+                  ) : (
+                    "Confirmar reserva"
+                  )}
                 </Button>
+                {error && (
+                  <div className="mt-3 p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-sm text-destructive flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+                    <span>{error}</span>
+                  </div>
+                )}
                 <p className="text-xs text-muted-foreground text-center mt-3 flex items-center justify-center gap-1">
                   <LifeBuoy className="w-3.5 h-3.5" />
                   Reserva 100% verificada y segura
