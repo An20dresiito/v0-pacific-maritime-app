@@ -364,7 +364,9 @@ export function SearchResultsClient() {
                           asChild
                         >
                           <Link
-                            href={`/reserva?route=${encodeURIComponent(
+                            href={`/reserva?viaje_id=${encodeURIComponent(
+                              viaje.id
+                            )}&route=${encodeURIComponent(
                               `${viaje.origen} - ${viaje.destino}`
                             )}&from=${encodeURIComponent(
                               viaje.origen
@@ -378,7 +380,9 @@ export function SearchResultsClient() {
                               formatTime(viaje.hora_salida)
                             )}&arrival=${encodeURIComponent(
                               formatTime(viaje.hora_llegada)
-                            )}&price=${encodeURIComponent(viaje.precio)}`}
+                            )}&price=${encodeURIComponent(
+                              viaje.precio
+                            )}&fecha=${encodeURIComponent(viaje.fecha)}`}
                           >
                             Reservar
                             <ArrowRight className="w-4 h-4 ml-2" />

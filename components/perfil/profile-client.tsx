@@ -194,6 +194,33 @@ export function ProfileClient({ user, profile }: ProfileClientProps) {
           </div>
         )}
 
+        {/* Tabs */}
+        <div className="flex gap-1 bg-muted p-1 rounded-lg mb-6">
+          <button
+            onClick={() => setActiveTab("perfil")}
+            className={`flex-1 py-2.5 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+              activeTab === "perfil"
+                ? "bg-card text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <User className="w-4 h-4" />
+            Mi Perfil
+          </button>
+          <button
+            onClick={() => setActiveTab("viajes")}
+            className={`flex-1 py-2.5 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+              activeTab === "viajes"
+                ? "bg-card text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Ticket className="w-4 h-4" />
+            Mis Viajes
+          </button>
+        </div>
+
+        {activeTab === "perfil" ? (
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Profile Card */}
           <div className="lg:col-span-1">
@@ -237,7 +264,7 @@ export function ProfileClient({ user, profile }: ProfileClientProps) {
                     <div>
                       <p className="text-muted-foreground text-xs">Puerto frecuente</p>
                       <p className="font-medium text-foreground">
-                        {profile?.puerto_origen || "No definido"}
+                        {profile?.puerto_frecuente || "No definido"}
                       </p>
                     </div>
                   </div>
@@ -291,7 +318,7 @@ export function ProfileClient({ user, profile }: ProfileClientProps) {
                     onClick={() => {
                       setIsEditing(false)
                       setError(null)
-                      setPuerto(profile?.puerto_origen || "")
+                      setPuerto(profile?.puerto_frecuente || "")
                     }}
                   >
                     <X className="w-4 h-4 mr-2" />
@@ -386,7 +413,7 @@ export function ProfileClient({ user, profile }: ProfileClientProps) {
                       </Select>
                     ) : (
                       <p className="h-11 px-3 flex items-center text-foreground bg-muted/50 rounded-lg">
-                        {profile?.puerto_origen || "No definido"}
+                        {profile?.puerto_frecuente || "No definido"}
                       </p>
                     )}
                   </div>
@@ -446,7 +473,148 @@ export function ProfileClient({ user, profile }: ProfileClientProps) {
             </div>
           </div>
         </div>
-      </main>
+        ) : (
+        /* Mis Viajes Tab */
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold text-foreground">Mis Reservas</h2>
+            <Button variant="outline" size="sm" onClick={loadReservas} disabled={loadingReservas}>
+              {loadingReservas ? <Loader2 className="w-4 h-4 animate-spin" /> : "Actualizar"}
+            </Button>
+          </div>
+
+          {loadingReservas ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          ) : reservas.length === 0 ? (
+            <div className="text-center py-12 bg-card border border-border rounded-2xl">
+              <Ship className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+              <h3 className="font-semibold text-foreground mb-2">No tienes reservas</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Explora nuestras rutas y reserva tu próximo viaje marítimo
+              </p>
+              <Button asChild>
+                <Link href="/buscar">Buscar viajes</Link>
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {reservas.map((reserva) => (
+                <div
+                  key={reserva.id}
+                  className="bg-card border border-border rounded-2xl overflow-hidden"
+                >
+                  {/* Ticket Header */}
+                  <div className={`p-4 ${
+                    reserva.estado === "confirmada" 
+                      ? "bg-primary text-primary-foreground" 
+                      : reserva.estado === "cancelada"
+                      ? "bg-muted text-muted-foreground"
+                      : "bg-secondary text-secondary-foreground"
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Ship className="w-6 h-6" />
+                        <div>
+                          <div className="font-bold">
+                            {reserva.viaje.origen} → {reserva.viaje.destino}
+                          </div>
+                          <div className="text-xs opacity-80">
+                            {reserva.viaje.nombre_embarcacion}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xs opacity-80">Código</div>
+                        <div className="font-mono font-bold">{reserva.codigo}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Ticket Body */}
+                  <div className="p-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
+                      <div>
+                        <div className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Calendar className="w-3 h-3" /> Fecha
+                        </div>
+                        <div className="font-medium text-foreground">
+                          {new Date(reserva.viaje.fecha).toLocaleDateString("es-CO", {
+                            day: "numeric",
+                            month: "short",
+                          })}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Clock className="w-3 h-3" /> Horario
+                        </div>
+                        <div className="font-medium text-foreground">
+                          {reserva.viaje.hora_salida}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-muted-foreground flex items-center gap-1">
+                          <User className="w-3 h-3" /> Pasajeros
+                        </div>
+                        <div className="font-medium text-foreground">{reserva.asientos}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-muted-foreground">Total</div>
+                        <div className="font-bold text-primary">
+                          ${Number(reserva.precio_total).toLocaleString("es-CO")} COP
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Asientos */}
+                    {reserva.asientos_seleccionados && reserva.asientos_seleccionados.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mb-4">
+                        {reserva.asientos_seleccionados.map((a) => (
+                          <span
+                            key={a}
+                            className="bg-primary/10 text-primary text-xs font-medium px-2 py-1 rounded"
+                          >
+                            {a}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Actions */}
+                    <div className="flex items-center justify-between pt-3 border-t border-border">
+                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                        reserva.estado === "confirmada"
+                          ? "bg-green-100 text-green-700"
+                          : reserva.estado === "cancelada"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-blue-100 text-blue-700"
+                      }`}>
+                        {reserva.estado === "confirmada" && "Confirmada"}
+                        {reserva.estado === "cancelada" && "Cancelada"}
+                        {reserva.estado === "completada" && "Completada"}
+                      </span>
+                      
+                      {reserva.estado === "confirmada" && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => handleCancelar(reserva.id)}
+                          disabled={isPending}
+                        >
+                          {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Cancelar"}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        )}
     </div>
   )
 }

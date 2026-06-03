@@ -36,7 +36,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
     setError(null)
     
     if (!isLogin && puerto) {
-      formData.set("puerto_origen", puerto)
+      formData.set("puerto_frecuente", puerto)
     }
 
     startTransition(async () => {
@@ -122,7 +122,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="puerto_origen">Puerto de origen frecuente</Label>
+              <Label htmlFor="puerto_frecuente">Puerto de origen frecuente</Label>
               <div className="relative">
                 <Anchor className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
                 <Select value={puerto} onValueChange={setPuerto} required disabled={isPending}>
