@@ -1,16 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Menu, X, User, Globe, ChevronDown } from "lucide-react"
+import { Menu, X, User, Globe, ChevronDown, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { createClient } from "@/lib/supabase/client"
+import type { User as SupabaseUser } from "@supabase/supabase-js"
 
 const languages = [
   { code: "es", name: "Español" },
@@ -22,6 +25,8 @@ const languages = [
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [currentLang, setCurrentLang] = useState("es")
+  const [user, setUser] = useState<SupabaseUser | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   const navLinks = [
     { href: "/", label: "Inicio" },
@@ -32,11 +37,35 @@ export function Header() {
     { href: "/#nosotros", label: "Nosotros" },
   ]
 
+  useEffect(() => {
+    const supabase = createClient()
+    
+    // Get initial session
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user)
+      setIsLoading(false)
+    })
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  async function handleSignOut() {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    setUser(null)
+    window.location.href = "/"
+  }
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-b border-border shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 md:h-24">
-          {/* Logo - más grande y separado */}
+          {/* Logo */}
           <Link href="/" className="flex items-center gap-4 shrink-0">
             <div className="relative">
               <Image
@@ -48,7 +77,7 @@ export function Header() {
                 priority
               />
             </div>
-            <div className="flex flex-col hidden md:flex">
+            <div className="flex-col hidden md:flex">
               <span className="text-lg lg:text-xl font-bold text-primary leading-tight tracking-tight">
                 PacificConnect
               </span>
@@ -58,7 +87,7 @@ export function Header() {
             </div>
           </Link>
 
-          {/* Desktop Navigation - separado con más espacio */}
+          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8 ml-12">
             {navLinks.map((link) => (
               <Link
@@ -96,12 +125,45 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button variant="ghost" size="sm" className="gap-2" asChild>
-              <Link href="/iniciar-sesion">
-                <User className="w-4 h-4" />
-                Iniciar Sesión
-              </Link>
-            </Button>
+            {/* Auth Buttons */}
+            {isLoading ? (
+              <div className="w-24 h-9 bg-muted animate-pulse rounded-md" />
+            ) : user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="gap-2">
+                    <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center">
+                      <User className="w-4 h-4 text-primary" />
+                    </div>
+                    <span className="max-w-[100px] truncate">
+                      {user.user_metadata?.nombre_completo?.split(" ")[0] || "Mi cuenta"}
+                    </span>
+                    <ChevronDown className="w-3 h-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link href="/perfil" className="cursor-pointer">
+                      <User className="w-4 h-4 mr-2" />
+                      Mi Perfil
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="text-destructive cursor-pointer">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Cerrar sesión
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button variant="ghost" size="sm" className="gap-2" asChild>
+                <Link href="/iniciar-sesion">
+                  <User className="w-4 h-4" />
+                  Iniciar Sesión
+                </Link>
+              </Button>
+            )}
+            
             <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
               <Link href="/reserva">Reservar Cupo</Link>
             </Button>
@@ -150,12 +212,34 @@ export function Header() {
             </div>
             
             <div className="pt-2 space-y-3">
-              <Button variant="outline" className="w-full gap-2" asChild>
-                <Link href="/iniciar-sesion" onClick={() => setIsMenuOpen(false)}>
-                  <User className="w-4 h-4" />
-                  Iniciar Sesión
-                </Link>
-              </Button>
+              {user ? (
+                <>
+                  <Button variant="outline" className="w-full gap-2" asChild>
+                    <Link href="/perfil" onClick={() => setIsMenuOpen(false)}>
+                      <User className="w-4 h-4" />
+                      Mi Perfil
+                    </Link>
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    className="w-full gap-2 text-destructive hover:text-destructive" 
+                    onClick={() => {
+                      handleSignOut()
+                      setIsMenuOpen(false)
+                    }}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Cerrar sesión
+                  </Button>
+                </>
+              ) : (
+                <Button variant="outline" className="w-full gap-2" asChild>
+                  <Link href="/iniciar-sesion" onClick={() => setIsMenuOpen(false)}>
+                    <User className="w-4 h-4" />
+                    Iniciar Sesión
+                  </Link>
+                </Button>
+              )}
               <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
                 <Link href="/reserva" onClick={() => setIsMenuOpen(false)}>
                   Reservar Cupo
