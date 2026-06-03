@@ -21,8 +21,6 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
 
 // --- Data ---
 
@@ -482,8 +480,7 @@ export default function EmbarcacionesPage() {
 
   return (
     <>
-      <Header />
-      <main className="min-h-screen bg-background pt-24 pb-20">
+      <div className="min-h-screen bg-background pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Back + breadcrumb */}
@@ -628,8 +625,7 @@ export default function EmbarcacionesPage() {
             </div>
           )}
         </div>
-      </main>
-      <Footer />
+      </div>
 
       {/* Modal */}
       {selectedVessel && (

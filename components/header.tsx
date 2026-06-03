@@ -30,11 +30,11 @@ export function Header() {
 
   const navLinks = [
     { href: "/", label: "Inicio" },
-    { href: "/#rutas", label: "Rutas" },
-    { href: "/#destinos", label: "Destinos" },
+    { href: "/rutas", label: "Rutas" },
+    { href: "/destinos", label: "Destinos" },
     { href: "/embarcaciones", label: "Embarcaciones" },
-    { href: "/#operadores", label: "Operadores" },
-    { href: "/#nosotros", label: "Nosotros" },
+    { href: "/operadores", label: "Operadores" },
+    { href: "/nosotros", label: "Nosotros" },
   ]
 
   useEffect(() => {

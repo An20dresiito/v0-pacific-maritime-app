@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { DM_Sans, Playfair_Display } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { Header } from '@/components/header'
+import { Footer } from '@/components/footer'
 import './globals.css'
 
 const dmSans = DM_Sans({ 
@@ -43,7 +45,11 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${dmSans.variable} ${playfair.variable} bg-background`}>
       <body className="font-sans antialiased">
-        {children}
+        <Header />
+        <main className="min-h-screen pt-20 md:pt-24">
+          {children}
+        </main>
+        <Footer />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
