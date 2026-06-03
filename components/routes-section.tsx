@@ -1,10 +1,39 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
-import { Ship, Clock, Users, ShieldCheck, ArrowRight, Anchor, CheckCircle } from "lucide-react"
+import { Ship, Clock, Users, ShieldCheck, ArrowRight, Anchor, CheckCircle, X, Calendar, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-const routes = [
+type Schedule = {
+  vessel: string
+  vesselType: string
+  departure: string
+  arrival: string
+  capacity: number
+  available: number
+  price: string
+}
+
+type Route = {
+  id: number
+  name: string
+  from: string
+  fromDept: string
+  to: string
+  toDept: string
+  stops: string[]
+  duration: string
+  frequency: string
+  price: string
+  vessel: string
+  capacity: string
+  features: string[]
+  popular: boolean
+  schedules: Schedule[]
+}
+
+const routes: Route[] = [
   {
     id: 1,
     name: "Ruta Chocó Express",
@@ -20,6 +49,12 @@ const routes = [
     capacity: "25 pasajeros",
     features: ["Chaleco salvavidas", "Seguro de viaje", "Equipaje incluido"],
     popular: true,
+    schedules: [
+      { vessel: "Veloz del Pacífico", vesselType: "Lancha Rápida", departure: "06:00", arrival: "10:30", capacity: 25, available: 12, price: "180.000" },
+      { vessel: "Delfín Azul", vesselType: "Lancha Rápida", departure: "08:30", arrival: "13:00", capacity: 25, available: 8, price: "180.000" },
+      { vessel: "Ballena Jorobada", vesselType: "Ferry Cómodo", departure: "11:00", arrival: "16:00", capacity: 60, available: 34, price: "150.000" },
+      { vessel: "Estrella Marina", vesselType: "Lancha Rápida", departure: "14:00", arrival: "18:30", capacity: 25, available: 20, price: "180.000" },
+    ],
   },
   {
     id: 2,
@@ -36,6 +71,11 @@ const routes = [
     capacity: "30 pasajeros",
     features: ["Chaleco salvavidas", "Seguro de viaje"],
     popular: true,
+    schedules: [
+      { vessel: "Manglar Express", vesselType: "Lancha Rápida", departure: "05:30", arrival: "09:00", capacity: 30, available: 15, price: "120.000" },
+      { vessel: "Corriente del Sur", vesselType: "Lancha Rápida", departure: "09:00", arrival: "12:30", capacity: 30, available: 22, price: "120.000" },
+      { vessel: "Marea Alta", vesselType: "Lancha Local", departure: "13:30", arrival: "17:30", capacity: 20, available: 6, price: "100.000" },
+    ],
   },
   {
     id: 3,
@@ -52,6 +92,11 @@ const routes = [
     capacity: "60 pasajeros",
     features: ["Chaleco salvavidas", "Cafetería", "Seguro de viaje", "WiFi"],
     popular: false,
+    schedules: [
+      { vessel: "Pacífico Mayor", vesselType: "Ferry Cómodo", departure: "05:00", arrival: "11:30", capacity: 60, available: 41, price: "220.000" },
+      { vessel: "Sol del Sur", vesselType: "Ferry Cómodo", departure: "07:30", arrival: "14:30", capacity: 60, available: 28, price: "220.000" },
+      { vessel: "Tiburón del Pacífico", vesselType: "Lancha Rápida", departure: "10:00", arrival: "16:00", capacity: 30, available: 9, price: "250.000" },
+    ],
   },
   {
     id: 4,
@@ -68,10 +113,31 @@ const routes = [
     capacity: "20 pasajeros",
     features: ["Chaleco salvavidas"],
     popular: false,
+    schedules: [
+      { vessel: "Olita Local", vesselType: "Lancha Local", departure: "07:00", arrival: "07:50", capacity: 20, available: 10, price: "45.000" },
+      { vessel: "Brisa Marina", vesselType: "Lancha Local", departure: "09:00", arrival: "09:50", capacity: 20, available: 18, price: "45.000" },
+      { vessel: "Cangrejo Veloz", vesselType: "Lancha Rápida", departure: "11:00", arrival: "11:45", capacity: 25, available: 4, price: "55.000" },
+      { vessel: "Olita Local", vesselType: "Lancha Local", departure: "13:00", arrival: "13:50", capacity: 20, available: 16, price: "45.000" },
+      { vessel: "Brisa Marina", vesselType: "Lancha Local", departure: "15:00", arrival: "15:50", capacity: 20, available: 12, price: "45.000" },
+      { vessel: "Cangrejo Veloz", vesselType: "Lancha Rápida", departure: "17:00", arrival: "17:45", capacity: 25, available: 21, price: "55.000" },
+    ],
   },
 ]
 
 export function RoutesSection() {
+  const [selectedRoute, setSelectedRoute] = useState<Route | null>(null)
+  const [selectedSchedule, setSelectedSchedule] = useState<number | null>(null)
+
+  const openSchedules = (route: Route) => {
+    setSelectedRoute(route)
+    setSelectedSchedule(null)
+  }
+
+  const closeModal = () => {
+    setSelectedRoute(null)
+    setSelectedSchedule(null)
+  }
+
   return (
     <section id="rutas" className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -226,11 +292,12 @@ export function RoutesSection() {
 
                 {/* CTA */}
                 <div className="flex gap-3">
-                  <Button variant="outline" className="flex-1">
+                  <Button variant="outline" className="flex-1" onClick={() => openSchedules(route)}>
+                    <Clock className="w-4 h-4 mr-2" />
                     Ver Horarios
                   </Button>
-                  <Button className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground">
-                    Reservar Cupo
+                  <Button className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
+                    <Link href="/embarcaciones">Reservar Cupo</Link>
                   </Button>
                 </div>
               </div>
@@ -254,6 +321,146 @@ export function RoutesSection() {
           </Button>
         </div>
       </div>
+
+      {/* Schedules Modal */}
+      {selectedRoute && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/60 backdrop-blur-sm"
+          onClick={closeModal}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Horarios de ${selectedRoute.name}`}
+        >
+          <div
+            className="relative bg-card rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="bg-primary text-primary-foreground p-6">
+              <button
+                onClick={closeModal}
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-primary-foreground/20 hover:bg-primary-foreground/30 flex items-center justify-center transition-colors"
+                aria-label="Cerrar"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <h3 className="text-2xl font-bold mb-2">{selectedRoute.name}</h3>
+              <div className="flex items-center gap-2 text-sm text-primary-foreground/90">
+                <MapPin className="w-4 h-4" />
+                <span className="font-medium">{selectedRoute.from}</span>
+                <ArrowRight className="w-4 h-4" />
+                <span className="font-medium">{selectedRoute.to}</span>
+                <span className="mx-2">·</span>
+                <Calendar className="w-4 h-4" />
+                <span>{selectedRoute.frequency}</span>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="font-semibold text-foreground">
+                  Selecciona tu embarcación
+                </h4>
+                <span className="text-xs text-muted-foreground">
+                  {selectedRoute.schedules.length} salidas disponibles
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                {selectedRoute.schedules.map((schedule, idx) => {
+                  const isSelected = selectedSchedule === idx
+                  const isFull = schedule.available === 0
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => !isFull && setSelectedSchedule(idx)}
+                      disabled={isFull}
+                      className={`w-full text-left rounded-xl border-2 p-4 transition-all ${
+                        isSelected
+                          ? "border-primary bg-primary/5"
+                          : isFull
+                          ? "border-border bg-muted/40 opacity-60 cursor-not-allowed"
+                          : "border-border hover:border-primary/50 hover:bg-muted/30"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-11 h-11 rounded-lg flex items-center justify-center shrink-0 ${
+                            isSelected ? "bg-primary text-primary-foreground" : "bg-muted text-primary"
+                          }`}>
+                            <Ship className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <div className="font-semibold text-foreground">{schedule.vessel}</div>
+                            <div className="text-xs text-muted-foreground">{schedule.vesselType}</div>
+                          </div>
+                        </div>
+
+                        {/* Times */}
+                        <div className="flex items-center gap-3 text-center">
+                          <div>
+                            <div className="text-xs text-muted-foreground">Salida</div>
+                            <div className="font-bold text-foreground">{schedule.departure}</div>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                          </div>
+                          <div>
+                            <div className="text-xs text-muted-foreground">Llegada</div>
+                            <div className="font-bold text-foreground">{schedule.arrival}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Footer of card */}
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
+                        <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                          isFull
+                            ? "bg-destructive/10 text-destructive"
+                            : schedule.available <= 5
+                            ? "bg-accent/20 text-accent-foreground"
+                            : "bg-secondary/15 text-secondary"
+                        }`}>
+                          {isFull ? "Agotado" : `${schedule.available} cupos disponibles`}
+                        </span>
+                        <span className="text-sm font-bold text-primary">${schedule.price} COP</span>
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="border-t border-border p-4 bg-muted/30 flex items-center justify-between gap-4">
+              <div className="text-sm text-muted-foreground">
+                {selectedSchedule !== null ? (
+                  <span>
+                    Seleccionado:{" "}
+                    <span className="font-semibold text-foreground">
+                      {selectedRoute.schedules[selectedSchedule].vessel} · {selectedRoute.schedules[selectedSchedule].departure}
+                    </span>
+                  </span>
+                ) : (
+                  <span>Elige una embarcación para continuar</span>
+                )}
+              </div>
+              <Button
+                className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0"
+                disabled={selectedSchedule === null}
+                asChild={selectedSchedule !== null}
+              >
+                {selectedSchedule !== null ? (
+                  <Link href="/embarcaciones">Reservar Cupo</Link>
+                ) : (
+                  <span>Reservar Cupo</span>
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   )
 }
