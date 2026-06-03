@@ -24,34 +24,42 @@ export async function signUp(formData: FormData) {
   const telefono = formData.get("telefono") as string
   const puerto_frecuente = formData.get("puerto_frecuente") as string
 
-  // Validaciones
-  if (!email || !password || !nombre_completo || !telefono || !puerto_frecuente) {
-    return { error: "Todos los campos son obligatorios" }
+  // Validaciones con campo identificado
+  if (!nombre_completo?.trim()) {
+    return { error: "El nombre completo es obligatorio", field: "nombre_completo" }
+  }
+
+  const telefonoLimpio = telefono?.replace(/\s/g, "") ?? ""
+  if (!telefonoLimpio) {
+    return { error: "El teléfono es obligatorio", field: "telefono" }
+  }
+  if (!/^(\+57)?[0-9]{10}$/.test(telefonoLimpio)) {
+    return { error: "El número de teléfono no es válido. Usa 10 dígitos (ej: 3001234567)", field: "telefono" }
+  }
+
+  if (!puerto_frecuente || !PUERTOS_VALIDOS.includes(puerto_frecuente)) {
+    return { error: "Selecciona un puerto de origen válido", field: "puerto_frecuente" }
   }
 
   // Validar email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!email?.trim()) {
+    return { error: "El correo electrónico es obligatorio", field: "email" }
+  }
   if (!emailRegex.test(email)) {
-    return { error: "El correo electrónico no es válido" }
+    return { error: "El correo electrónico no tiene un formato válido", field: "email" }
   }
 
   // Validar contraseña segura (mínimo 8 caracteres, una mayúscula, una minúscula, un número)
+  if (!password) {
+    return { error: "La contraseña es obligatoria", field: "password" }
+  }
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/
   if (!passwordRegex.test(password)) {
-    return { 
-      error: "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número" 
+    return {
+      error: "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número",
+      field: "password",
     }
-  }
-
-  // Validar puerto
-  if (!PUERTOS_VALIDOS.includes(puerto_frecuente)) {
-    return { error: "Puerto de origen no válido" }
-  }
-
-  // Validar teléfono (formato colombiano)
-  const telefonoLimpio = telefono.replace(/\s/g, "")
-  if (!/^(\+57)?[0-9]{10}$/.test(telefonoLimpio)) {
-    return { error: "El número de teléfono no es válido" }
   }
 
   const { data, error } = await supabase.auth.signUp({
@@ -70,10 +78,10 @@ export async function signUp(formData: FormData) {
   })
 
   if (error) {
-    if (error.message.includes("already registered")) {
-      return { error: "Este correo ya está registrado" }
+    if (error.message.includes("already registered") || error.message.includes("User already registered")) {
+      return { error: "Este correo ya está registrado. Intenta iniciar sesión.", field: "email" }
     }
-    return { error: error.message }
+    return { error: error.message, field: null }
   }
 
   // Redirigir a página de éxito de registro
@@ -87,7 +95,7 @@ export async function signIn(formData: FormData) {
   const password = formData.get("password") as string
 
   if (!email || !password) {
-    return { error: "Correo y contraseña son obligatorios" }
+    return { error: "Correo y contraseña son obligatorios", field: !email ? "email" : "password" }
   }
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -97,9 +105,9 @@ export async function signIn(formData: FormData) {
 
   if (error) {
     if (error.message.includes("Invalid login credentials")) {
-      return { error: "Correo o contraseña incorrectos" }
+      return { error: "Correo o contraseña incorrectos", field: "password" }
     }
-    return { error: error.message }
+    return { error: error.message, field: "password" }
   }
 
   redirect("/perfil")
