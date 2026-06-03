@@ -84,8 +84,14 @@ export async function signUp(formData: FormData) {
     return { error: error.message, field: null }
   }
 
-  // Redirigir a página de éxito de registro
-  redirect("/registro-exitoso")
+  // Con confirmación de email desactivada, Supabase crea la sesión inmediatamente.
+  // Si hay usuario, redirigir directamente al perfil.
+  if (data?.user) {
+    redirect("/perfil")
+  }
+
+  // Fallback: si por alguna razón no hay user pero tampoco error
+  redirect("/perfil")
 }
 
 export async function signIn(formData: FormData) {

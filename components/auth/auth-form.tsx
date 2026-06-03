@@ -2,6 +2,7 @@
 
 import { useState, useTransition, useRef, useEffect } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { Mail, Lock, User, Eye, EyeOff, Loader2, ArrowLeft, Phone, Anchor, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -29,6 +30,7 @@ type FieldName = "nombre_completo" | "telefono" | "email" | "password"
 
 export function AuthForm({ mode }: { mode: AuthMode }) {
   const isLogin = mode === "login"
+  const router = useRouter()
 
   // --- Controlled field state ---
   const [nombre, setNombre] = useState("")
@@ -79,24 +81,29 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
     startTransition(async () => {
       const result = isLogin ? await signIn(formData) : await signUp(formData)
 
-      if (result?.error) {
-        const field = (result as { error: string; field?: string | null }).field ?? null
-
-        setError(result.error)
-        setErrorField(field)
-
-        // Clear ONLY the field with the error
-        if (field === "password") {
-          setPassword("")
-        } else if (field === "email") {
-          setEmail("")
-        } else if (field === "telefono") {
-          setTelefono("")
-        } else if (field === "nombre_completo") {
-          setNombre("")
-        }
-        // puerto_frecuente is a Select — keep value so user just re-confirms, don't clear
+      // Si no hay error, la Server Action hace redirect. 
+      // Pero si por alguna razón no lo hace, forzamos la navegación del lado cliente.
+      if (!result?.error) {
+        router.push("/perfil")
+        return
       }
+
+      const field = (result as { error: string; field?: string | null }).field ?? null
+
+      setError(result.error)
+      setErrorField(field)
+
+      // Clear ONLY the field with the error
+      if (field === "password") {
+        setPassword("")
+      } else if (field === "email") {
+        setEmail("")
+      } else if (field === "telefono") {
+        setTelefono("")
+      } else if (field === "nombre_completo") {
+        setNombre("")
+      }
+      // puerto_frecuente is a Select — keep value so user just re-confirms, don't clear
     })
   }
 
