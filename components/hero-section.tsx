@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { Search, MapPin, Calendar, Users, ChevronDown, Shield, Clock, Anchor, Waves } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -26,10 +27,35 @@ const popularRoutes = [
 ]
 
 export function HeroSection() {
+  const router = useRouter()
   const [origin, setOrigin] = useState("")
   const [destination, setDestination] = useState("")
   const [date, setDate] = useState("")
   const [passengers, setPassengers] = useState("1")
+  const [isSearching, setIsSearching] = useState(false)
+
+  const handleSearch = () => {
+    setIsSearching(true)
+    const params = new URLSearchParams()
+    if (origin) params.set("origen", origin)
+    if (destination) params.set("destino", destination)
+    if (date) params.set("fecha", date)
+    if (passengers) params.set("pasajeros", passengers)
+    
+    router.push(`/buscar?${params.toString()}`)
+  }
+
+  const handleQuickRoute = (from: string, to: string) => {
+    setOrigin(from)
+    setDestination(to)
+    const params = new URLSearchParams()
+    params.set("origen", from)
+    params.set("destino", to)
+    if (date) params.set("fecha", date)
+    if (passengers) params.set("pasajeros", passengers)
+    
+    router.push(`/buscar?${params.toString()}`)
+  }
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
@@ -179,9 +205,19 @@ export function HeroSection() {
 
             {/* Search Button */}
             <div className="flex items-end">
-              <Button className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground text-base font-semibold gap-2">
-                <Search className="w-5 h-5" />
-                Buscar
+              <Button 
+                onClick={handleSearch}
+                disabled={isSearching}
+                className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground text-base font-semibold gap-2"
+              >
+                {isSearching ? (
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current" />
+                ) : (
+                  <>
+                    <Search className="w-5 h-5" />
+                    Buscar
+                  </>
+                )}
               </Button>
             </div>
           </div>
@@ -192,10 +228,7 @@ export function HeroSection() {
             {popularRoutes.map((route, idx) => (
               <button 
                 key={idx}
-                onClick={() => {
-                  setOrigin(route.from)
-                  setDestination(route.to)
-                }}
+                onClick={() => handleQuickRoute(route.from, route.to)}
                 className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full hover:bg-primary/20 transition-colors"
               >
                 {route.from} → {route.to} ({route.duration})
