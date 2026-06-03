@@ -103,7 +103,7 @@ export function Header() {
               </Link>
             </Button>
             <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
-              <Link href="/registro">Reservar Cupo</Link>
+              <Link href="/reserva">Reservar Cupo</Link>
             </Button>
           </div>
 
@@ -157,7 +157,7 @@ export function Header() {
                 </Link>
               </Button>
               <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
-                <Link href="/registro" onClick={() => setIsMenuOpen(false)}>
+                <Link href="/reserva" onClick={() => setIsMenuOpen(false)}>
                   Reservar Cupo
                 </Link>
               </Button>

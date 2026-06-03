@@ -18,8 +18,8 @@ const footerLinks = {
     { label: "Ladrilleros", href: "#" },
   ],
   servicios: [
-    { label: "Reservar Cupo", href: "#" },
-    { label: "Consultar Rutas", href: "#" },
+    { label: "Reservar Cupo", href: "/reserva" },
+    { label: "Consultar Rutas", href: "/#rutas" },
     { label: "Operadores", href: "#" },
     { label: "Equipaje", href: "#" },
     { label: "Grupos", href: "#" },

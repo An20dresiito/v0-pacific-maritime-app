@@ -297,7 +297,15 @@ export function RoutesSection() {
                     Ver Horarios
                   </Button>
                   <Button className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
-                    <Link href="/embarcaciones">Reservar Cupo</Link>
+                    <Link
+                      href={`/reserva?route=${encodeURIComponent(route.name)}&from=${encodeURIComponent(
+                        route.from,
+                      )}&to=${encodeURIComponent(route.to)}&type=${encodeURIComponent(
+                        route.vessel,
+                      )}&price=${encodeURIComponent(route.price)}`}
+                    >
+                      Reservar Cupo
+                    </Link>
                   </Button>
                 </div>
               </div>
@@ -314,7 +322,7 @@ export function RoutesSection() {
             </Link>
           </Button>
           <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
-            <Link href="/embarcaciones">
+            <Link href="/reserva">
               Reservar Cupo
               <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
@@ -452,7 +460,21 @@ export function RoutesSection() {
                 asChild={selectedSchedule !== null}
               >
                 {selectedSchedule !== null ? (
-                  <Link href="/embarcaciones">Reservar Cupo</Link>
+                  <Link
+                    href={`/reserva?route=${encodeURIComponent(selectedRoute.name)}&from=${encodeURIComponent(
+                      selectedRoute.from,
+                    )}&to=${encodeURIComponent(selectedRoute.to)}&vessel=${encodeURIComponent(
+                      selectedRoute.schedules[selectedSchedule].vessel,
+                    )}&type=${encodeURIComponent(
+                      selectedRoute.schedules[selectedSchedule].vesselType,
+                    )}&departure=${encodeURIComponent(
+                      selectedRoute.schedules[selectedSchedule].departure,
+                    )}&arrival=${encodeURIComponent(
+                      selectedRoute.schedules[selectedSchedule].arrival,
+                    )}&price=${encodeURIComponent(selectedRoute.schedules[selectedSchedule].price)}`}
+                  >
+                    Reservar Cupo
+                  </Link>
                 ) : (
                   <span>Reservar Cupo</span>
                 )}

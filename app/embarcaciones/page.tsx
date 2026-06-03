@@ -320,8 +320,19 @@ function VesselCard({
           <Button
             className="flex-1 text-sm bg-primary hover:bg-primary/90 text-primary-foreground"
             disabled={!vessel.available}
+            asChild={vessel.available}
           >
-            {vessel.available ? "Reservar cupo" : "No disponible"}
+            {vessel.available ? (
+              <Link
+                href={`/reserva?route=${encodeURIComponent(vessel.routeNames[0])}&vessel=${encodeURIComponent(
+                  vessel.name,
+                )}&type=${encodeURIComponent(vessel.typeName)}&price=${encodeURIComponent(vessel.price)}`}
+              >
+                Reservar cupo
+              </Link>
+            ) : (
+              <span>No disponible</span>
+            )}
           </Button>
         </div>
       </div>
@@ -428,8 +439,19 @@ function VesselModal({
               size="lg"
               className="bg-primary hover:bg-primary/90 text-primary-foreground"
               disabled={!vessel.available}
+              asChild={vessel.available}
             >
-              {vessel.available ? "Reservar este cupo" : "Sin disponibilidad"}
+              {vessel.available ? (
+                <Link
+                  href={`/reserva?route=${encodeURIComponent(vessel.routeNames[0])}&vessel=${encodeURIComponent(
+                    vessel.name,
+                  )}&type=${encodeURIComponent(vessel.typeName)}&price=${encodeURIComponent(vessel.price)}`}
+                >
+                  Reservar este cupo
+                </Link>
+              ) : (
+                <span>Sin disponibilidad</span>
+              )}
             </Button>
           </div>
         </div>
