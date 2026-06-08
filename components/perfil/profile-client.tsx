@@ -615,6 +615,7 @@ export function ProfileClient({ user, profile }: ProfileClientProps) {
           )}
         </div>
         )}
+      </main>
     </div>
   )
 }

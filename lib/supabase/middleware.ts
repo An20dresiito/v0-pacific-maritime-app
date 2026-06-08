@@ -41,12 +41,16 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  // --- MOCK AUTH: aceptar sesión simulada en cookie (entorno de desarrollo) ---
+  const hasMockSession = !!request.cookies.get('mock_session')?.value
+
   if (
     // if the user is not logged in and protected paths are accessed, redirect to the login page
     (request.nextUrl.pathname.startsWith('/protected') ||
      request.nextUrl.pathname.startsWith('/perfil') ||
      request.nextUrl.pathname.startsWith('/reserva')) &&
-    !user
+    !user &&
+    !hasMockSession
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
