@@ -3,11 +3,7 @@
 import { useState, useTransition, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { 
-  User, Mail, Phone, Anchor, MapPin, Calendar, Edit2, 
-  Save, X, Loader2, CheckCircle, Ship, Waves, LogOut,
-  AlertCircle, ArrowLeft, Ticket, Clock, QrCode, AlertTriangle
-} from "lucide-react"
+import { User, Mail, Phone, Anchor, MapPin, Calendar, CreditCard as Edit2, Save, X, Loader as Loader2, CircleCheck as CheckCircle, Ship, Waves, LogOut, CircleAlert as AlertCircle, ArrowLeft, Ticket, Clock, QrCode, TriangleAlert as AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -474,7 +470,6 @@ export function ProfileClient({ user, profile }: ProfileClientProps) {
           </div>
         </div>
         ) : (
-        /* Mis Viajes Tab */
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold text-foreground">Mis Reservas</h2>
@@ -615,6 +610,7 @@ export function ProfileClient({ user, profile }: ProfileClientProps) {
           )}
         </div>
         )}
+      </main>
     </div>
   )
 }

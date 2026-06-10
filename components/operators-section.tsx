@@ -1,11 +1,13 @@
 "use client"
 
-import { Ship, Star, Shield, Users, CheckCircle, ArrowRight } from "lucide-react"
+import Link from "next/link"
+import { Ship, Star, Shield, Users, CircleCheck as CheckCircle, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const operators = [
   {
-    id: 1,
+    id: "op-1",
+    slug: "transportes-del-pacifico",
     name: "Transportes del Pacífico",
     logo: "TP",
     rating: 4.9,
@@ -17,7 +19,8 @@ const operators = [
     specialties: ["Rutas largas", "Grupos grandes", "Carga"],
   },
   {
-    id: 2,
+    id: "op-2",
+    slug: "lanchas-buenaventura",
     name: "Lanchas Buenaventura",
     logo: "LB",
     rating: 4.8,
@@ -29,7 +32,8 @@ const operators = [
     specialties: ["Rutas cortas", "Alta frecuencia", "Turismo"],
   },
   {
-    id: 3,
+    id: "op-3",
+    slug: "navegantes-del-choco",
     name: "Navegantes del Chocó",
     logo: "NC",
     rating: 4.7,
@@ -41,7 +45,8 @@ const operators = [
     specialties: ["Ecoturismo", "Ballenas", "Naturaleza"],
   },
   {
-    id: 4,
+    id: "op-4",
+    slug: "costa-sur-express",
     name: "Costa Sur Express",
     logo: "CS",
     rating: 4.6,
@@ -127,11 +132,11 @@ export function OperatorsSection() {
 
                   {/* Actions */}
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
-                      Ver Perfil
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href={`/operadores/${operator.id}`}>Ver Perfil</Link>
                     </Button>
-                    <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                      Ver Rutas
+                    <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
+                      <Link href={`/buscar?operador=${encodeURIComponent(operator.name)}`}>Ver Rutas</Link>
                     </Button>
                   </div>
                 </div>
@@ -146,12 +151,14 @@ export function OperatorsSection() {
             ¿Eres operador de transporte marítimo?
           </h3>
           <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
-            Únete a PACIFICCONNECT para gestionar tus reservas, organizar pasajeros 
+            Únete a PACIFICCONNECT para gestionar tus reservas, organizar pasajeros
             y mejorar la eficiencia de tu servicio.
           </p>
-          <Button size="lg" className="bg-secondary hover:bg-secondary/90 text-secondary-foreground">
-            Registrar mi Empresa
-            <ArrowRight className="w-4 h-4 ml-2" />
+          <Button size="lg" className="bg-secondary hover:bg-secondary/90 text-secondary-foreground" asChild>
+            <Link href="/registro-empresa">
+              Registrar mi Empresa
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Link>
           </Button>
         </div>
       </div>

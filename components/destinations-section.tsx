@@ -1,8 +1,15 @@
 "use client"
 
 import { useState } from "react"
-import { MapPin, Clock, ArrowRight, Filter, Anchor } from "lucide-react"
+import Link from "next/link"
+import { MapPin, Clock, ArrowRight, ListFilter as Filter, Anchor } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 type Department = "todos" | "choco" | "valle" | "cauca" | "narino"
 
@@ -40,6 +47,39 @@ const destinations: Destination[] = [
     fromPort: "Buenaventura",
     highlights: ["Tortugas", "Buceo", "Selva"],
     image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=600&auto=format&fit=crop",
+  },
+  {
+    id: "jurado",
+    name: "Juradó",
+    department: "choco",
+    departmentName: "Chocó",
+    description: "Destino remoto en la frontera con Panamá, playas prístinas y selva intacta.",
+    travelTime: "8h desde Buenaventura",
+    fromPort: "Buenaventura",
+    highlights: ["Remoto", "Selva", "Frontera"],
+    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop",
+  },
+  {
+    id: "pizarro",
+    name: "Pizarro",
+    department: "choco",
+    departmentName: "Chocó",
+    description: "Puerto tradicional en la costa norte del Chocó con rica cultura afrocolombiana.",
+    travelTime: "6h desde Buenaventura",
+    fromPort: "Buenaventura",
+    highlights: ["Cultura", "Pesca", "Tradiciones"],
+    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=600&auto=format&fit=crop",
+  },
+  {
+    id: "el-valle",
+    name: "El Valle",
+    department: "choco",
+    departmentName: "Chocó",
+    description: "Playa paradisíaca cerca a Bahía Solano, perfecta para surf y naturaleza.",
+    travelTime: "4.5h desde Buenaventura",
+    fromPort: "Buenaventura",
+    highlights: ["Surf", "Playas", "Naturaleza"],
+    image: "https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=600&auto=format&fit=crop",
   },
   {
     id: "buenaventura",
@@ -86,6 +126,17 @@ const destinations: Destination[] = [
     image: "https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=600&auto=format&fit=crop",
   },
   {
+    id: "isla-gorgona",
+    name: "Isla Gorgona",
+    department: "cauca",
+    departmentName: "Cauca",
+    description: "Antigua prisión convertida en parque nacional con arrecifes de coral y fauna única.",
+    travelTime: "2.5h desde Guapi",
+    fromPort: "Guapi",
+    highlights: ["Parque Nacional", "Coral", "Ballenas"],
+    image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=600&auto=format&fit=crop",
+  },
+  {
     id: "guapi",
     name: "Guapi",
     department: "cauca",
@@ -97,15 +148,48 @@ const destinations: Destination[] = [
     image: "https://images.unsplash.com/photo-1516815231560-8f41ec531527?q=80&w=600&auto=format&fit=crop",
   },
   {
-    id: "timbiqui",
-    name: "Timbiquí",
+    id: "la-tola",
+    name: "La Tola",
     department: "cauca",
     departmentName: "Cauca",
-    description: "Riqueza cultural y natural en el corazón del Pacífico caucano.",
-    travelTime: "4h desde Buenaventura",
+    description: "Pueblo costero con tradiciones de pesca artesanal y ricas raíces afrocolombianas.",
+    travelTime: "3.5h desde Buenaventura",
     fromPort: "Buenaventura",
-    highlights: ["Cultura", "Naturaleza", "Comunidades"],
+    highlights: ["Pesca", "Historia", "Tradiciones"],
+    image: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=600&auto=format&fit=crop",
+  },
+  {
+    id: "mosquera",
+    name: "Mosquera",
+    department: "cauca",
+    departmentName: "Cauca",
+    description: "Comunidad afrocolombiana con extensas playas y rico patrimonio cultural.",
+    travelTime: "3.5h desde Buenaventura",
+    fromPort: "Buenaventura",
+    highlights: ["Playas", "Comunidad", "Cultura"],
     image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=600&auto=format&fit=crop",
+  },
+  {
+    id: "iscuande",
+    name: "Iscuandé",
+    department: "narino",
+    departmentName: "Nariño",
+    description: "Pueblo pesquero rodeado de manglares y ecosistemas de gran biodiversidad.",
+    travelTime: "5h desde Buenaventura",
+    fromPort: "Buenaventura",
+    highlights: ["Manglares", "Pesca", "Naturaleza"],
+    image: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?q=80&w=600&auto=format&fit=crop",
+  },
+  {
+    id: "lopez-de-micay",
+    name: "López de Micay",
+    department: "narino",
+    departmentName: "Nariño",
+    description: "Destino natural con playas vírgenes y acceso a selva húmeda tropical.",
+    travelTime: "4.5h desde Buenaventura",
+    fromPort: "Buenaventura",
+    highlights: ["Playas", "Selva", "Aventura"],
+    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop",
   },
   {
     id: "tumaco",
@@ -129,6 +213,17 @@ const destinations: Destination[] = [
     highlights: ["Pesca", "Manglares", "Tradiciones"],
     image: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=600&auto=format&fit=crop",
   },
+  {
+    id: "timbiqui",
+    name: "Timbiquí",
+    department: "cauca",
+    departmentName: "Cauca",
+    description: "Riqueza cultural y natural en el corazón del Pacífico caucano.",
+    travelTime: "4h desde Buenaventura",
+    fromPort: "Buenaventura",
+    highlights: ["Cultura", "Naturaleza", "Comunidades"],
+    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=600&auto=format&fit=crop",
+  },
 ]
 
 const departmentFilters: { id: Department; name: string }[] = [
@@ -141,9 +236,9 @@ const departmentFilters: { id: Department; name: string }[] = [
 
 export function DestinationsSection() {
   const [activeFilter, setActiveFilter] = useState<Department>("todos")
-  
-  const filteredDestinations = activeFilter === "todos" 
-    ? destinations 
+
+  const filteredDestinations = activeFilter === "todos"
+    ? destinations
     : destinations.filter(d => d.department === activeFilter)
 
   return (
@@ -159,7 +254,7 @@ export function DestinationsSection() {
             Explora el Pacífico Colombiano
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-pretty">
-            Cuatro departamentos conectados por mar. Descubre comunidades, playas vírgenes 
+            Cuatro departamentos conectados por mar. Descubre comunidades, playas vírgenes
             y la biodiversidad más rica del planeta.
           </p>
         </div>
@@ -183,7 +278,7 @@ export function DestinationsSection() {
         </div>
 
         {/* Destinations Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredDestinations.map((destination) => (
             <article
               key={destination.id}
@@ -197,14 +292,14 @@ export function DestinationsSection() {
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/20 to-transparent" />
-                
+
                 {/* Department Badge */}
                 <div className="absolute top-3 left-3">
                   <span className="px-2 py-1 rounded-md bg-white/90 text-xs font-medium text-foreground">
                     {destination.departmentName}
                   </span>
                 </div>
-                
+
                 {/* Title on image */}
                 <div className="absolute bottom-3 left-3 right-3">
                   <h3 className="text-xl font-bold text-white mb-1">
@@ -235,10 +330,43 @@ export function DestinationsSection() {
                   ))}
                 </div>
 
-                <Button variant="ghost" size="sm" className="w-full justify-between text-primary hover:text-primary hover:bg-primary/5">
-                  <span>Ver rutas disponibles</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
+                {/* Routes Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="w-full justify-between text-primary hover:text-primary hover:bg-primary/5">
+                      <span>Ver rutas disponibles</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem asChild>
+                      <Link href={`/buscar?destino=${encodeURIComponent(destination.name)}`} className="cursor-pointer">
+                        Desde {destination.fromPort}
+                        <span className="ml-auto text-xs text-muted-foreground">{destination.travelTime}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    {destination.name !== "Buenaventura" && (
+                      <>
+                        <DropdownMenuItem asChild>
+                          <Link
+                            href={`/buscar?origen=${encodeURIComponent(destination.name)}`}
+                            className="cursor-pointer"
+                          >
+                            Rutas desde {destination.name}
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link
+                            href={`/buscar?destino=${encodeURIComponent(destination.name)}&origen=Buenaventura`}
+                            className="cursor-pointer"
+                          >
+                            Busqueda rapida desde Buenaventura
+                          </Link>
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </article>
           ))}
@@ -246,9 +374,11 @@ export function DestinationsSection() {
 
         {/* View All Button */}
         <div className="text-center mt-12">
-          <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Anchor className="w-4 h-4 mr-2" />
-            Ver Todas las Rutas
+          <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
+            <Link href="/rutas">
+              <Anchor className="w-4 h-4 mr-2" />
+              Ver Todas las Rutas
+            </Link>
           </Button>
         </div>
       </div>

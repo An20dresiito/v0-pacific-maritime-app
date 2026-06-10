@@ -2,8 +2,9 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Ship, Clock, Users, ShieldCheck, ArrowRight, Anchor, CheckCircle, X, Calendar, MapPin } from "lucide-react"
+import { Ship, Clock, Users, ShieldCheck, ArrowRight, Anchor, CheckCircle, X, Calendar, MapPin, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
 type Schedule = {
   vessel: string
@@ -23,6 +24,7 @@ type Route = {
   to: string
   toDept: string
   stops: string[]
+  stopTimes?: { stop: string; duration: string }[]
   duration: string
   frequency: string
   price: string
@@ -30,6 +32,7 @@ type Route = {
   capacity: string
   features: string[]
   popular: boolean
+  multiStop: boolean
   schedules: Schedule[]
 }
 
@@ -42,6 +45,10 @@ const routes: Route[] = [
     to: "Nuquí",
     toDept: "Chocó",
     stops: ["Bahía Málaga", "Ladrilleros"],
+    stopTimes: [
+      { stop: "Bahía Málaga", duration: "45 min" },
+      { stop: "Ladrilleros", duration: "1h 30min" },
+    ],
     duration: "4-5 horas",
     frequency: "Martes, Jueves, Sábado",
     price: "180.000",
@@ -49,6 +56,7 @@ const routes: Route[] = [
     capacity: "25 pasajeros",
     features: ["Chaleco salvavidas", "Seguro de viaje", "Equipaje incluido"],
     popular: true,
+    multiStop: false,
     schedules: [
       { vessel: "Veloz del Pacífico", vesselType: "Lancha Rápida", departure: "06:00", arrival: "10:30", capacity: 25, available: 12, price: "180.000" },
       { vessel: "Delfín Azul", vesselType: "Lancha Rápida", departure: "08:30", arrival: "13:00", capacity: 25, available: 8, price: "180.000" },
@@ -64,6 +72,7 @@ const routes: Route[] = [
     to: "Guapi",
     toDept: "Cauca",
     stops: ["Timbiquí"],
+    stopTimes: [{ stop: "Timbiquí", duration: "1h 45min" }],
     duration: "3-4 horas",
     frequency: "Lunes, Miércoles, Viernes",
     price: "120.000",
@@ -71,6 +80,7 @@ const routes: Route[] = [
     capacity: "30 pasajeros",
     features: ["Chaleco salvavidas", "Seguro de viaje"],
     popular: true,
+    multiStop: false,
     schedules: [
       { vessel: "Manglar Express", vesselType: "Lancha Rápida", departure: "05:30", arrival: "09:00", capacity: 30, available: 15, price: "120.000" },
       { vessel: "Corriente del Sur", vesselType: "Lancha Rápida", departure: "09:00", arrival: "12:30", capacity: 30, available: 22, price: "120.000" },
@@ -85,6 +95,10 @@ const routes: Route[] = [
     to: "Tumaco",
     toDept: "Nariño",
     stops: ["Guapi", "El Charco"],
+    stopTimes: [
+      { stop: "Guapi", duration: "3h" },
+      { stop: "El Charco", duration: "5h" },
+    ],
     duration: "6-7 horas",
     frequency: "Martes, Sábado",
     price: "220.000",
@@ -92,6 +106,7 @@ const routes: Route[] = [
     capacity: "60 pasajeros",
     features: ["Chaleco salvavidas", "Cafetería", "Seguro de viaje", "WiFi"],
     popular: false,
+    multiStop: true,
     schedules: [
       { vessel: "Pacífico Mayor", vesselType: "Ferry Cómodo", departure: "05:00", arrival: "11:30", capacity: 60, available: 41, price: "220.000" },
       { vessel: "Sol del Sur", vesselType: "Ferry Cómodo", departure: "07:30", arrival: "14:30", capacity: 60, available: 28, price: "220.000" },
@@ -106,6 +121,7 @@ const routes: Route[] = [
     to: "Ladrilleros",
     toDept: "Valle del Cauca",
     stops: ["Juanchaco"],
+    stopTimes: [{ stop: "Juanchaco", duration: "30 min" }],
     duration: "45 min - 1 hora",
     frequency: "Diario (cada 2 horas)",
     price: "45.000",
@@ -113,6 +129,7 @@ const routes: Route[] = [
     capacity: "20 pasajeros",
     features: ["Chaleco salvavidas"],
     popular: false,
+    multiStop: false,
     schedules: [
       { vessel: "Olita Local", vesselType: "Lancha Local", departure: "07:00", arrival: "07:50", capacity: 20, available: 10, price: "45.000" },
       { vessel: "Brisa Marina", vesselType: "Lancha Local", departure: "09:00", arrival: "09:50", capacity: 20, available: 18, price: "45.000" },
@@ -120,6 +137,124 @@ const routes: Route[] = [
       { vessel: "Olita Local", vesselType: "Lancha Local", departure: "13:00", arrival: "13:50", capacity: 20, available: 16, price: "45.000" },
       { vessel: "Brisa Marina", vesselType: "Lancha Local", departure: "15:00", arrival: "15:50", capacity: 20, available: 12, price: "45.000" },
       { vessel: "Cangrejo Veloz", vesselType: "Lancha Rápida", departure: "17:00", arrival: "17:45", capacity: 25, available: 21, price: "55.000" },
+    ],
+  },
+  {
+    id: 5,
+    name: "Ruta Isla Gorgona",
+    from: "Buenaventura",
+    fromDept: "Valle del Cauca",
+    to: "Isla Gorgona",
+    toDept: "Cauca",
+    stops: ["Guapi"],
+    stopTimes: [{ stop: "Guapi", duration: "3h" }],
+    duration: "5.5 horas",
+    frequency: "Miércoles, Viernes, Domingo",
+    price: "180.000",
+    vessel: "Lancha Rápida",
+    capacity: "25 pasajeros",
+    features: ["Chaleco salvavidas", "Seguro de viaje", "Guía turístico"],
+    popular: true,
+    multiStop: true,
+    schedules: [
+      { vessel: "Gorgona Explorer", vesselType: "Lancha Rápida", departure: "05:00", arrival: "10:30", capacity: 25, available: 10, price: "180.000" },
+      { vessel: "Tortuga Marina", vesselType: "Lancha Rápida", departure: "07:00", arrival: "12:30", capacity: 20, available: 15, price: "180.000" },
+    ],
+  },
+  {
+    id: 6,
+    name: "Ruta Frontera Norte",
+    from: "Buenaventura",
+    fromDept: "Valle del Cauca",
+    to: "Juradó",
+    toDept: "Chocó",
+    stops: ["Nuquí", "Bahía Solano", "El Valle"],
+    stopTimes: [
+      { stop: "Nuquí", duration: "4h" },
+      { stop: "Bahía Solano", duration: "6h" },
+      { stop: "El Valle", duration: "7h" },
+    ],
+    duration: "8 horas",
+    frequency: "Sábado",
+    price: "280.000",
+    vessel: "Ferry",
+    capacity: "40 pasajeros",
+    features: ["Chaleco salvavidas", "Alimentación", "Seguro de viaje"],
+    popular: false,
+    multiStop: true,
+    schedules: [
+      { vessel: "Norte Express", vesselType: "Ferry", departure: "04:00", arrival: "12:00", capacity: 40, available: 25, price: "280.000" },
+    ],
+  },
+  {
+    id: 7,
+    name: "Ruta Pizarro Express",
+    from: "Buenaventura",
+    fromDept: "Valle del Cauca",
+    to: "Pizarro",
+    toDept: "Chocó",
+    stops: ["Nuquí"],
+    stopTimes: [{ stop: "Nuquí", duration: "4h" }],
+    duration: "6 horas",
+    frequency: "Lunes, Jueves, Sábado",
+    price: "200.000",
+    vessel: "Lancha Rápida",
+    capacity: "25 pasajeros",
+    features: ["Chaleco salvavidas", "Seguro de viaje"],
+    popular: false,
+    multiStop: false,
+    schedules: [
+      { vessel: "Pizarro Directo", vesselType: "Lancha Rápida", departure: "06:00", arrival: "12:00", capacity: 25, available: 18, price: "200.000" },
+      { vessel: "Chocó Veloz", vesselType: "Lancha Rápida", departure: "09:00", arrival: "15:00", capacity: 25, available: 12, price: "200.000" },
+    ],
+  },
+  {
+    id: 8,
+    name: "Ruta Cauca Profundo",
+    from: "Buenaventura",
+    fromDept: "Valle del Cauca",
+    to: "López de Micay",
+    toDept: "Nariño",
+    stops: ["Guapi", "La Tola", "Mosquera"],
+    stopTimes: [
+      { stop: "Guapi", duration: "3h" },
+      { stop: "La Tola", duration: "3.5h" },
+      { stop: "Mosquera", duration: "4h" },
+    ],
+    duration: "4.5 horas",
+    frequency: "Martes, Viernes",
+    price: "150.000",
+    vessel: "Lancha Rápida",
+    capacity: "20 pasajeros",
+    features: ["Chaleco salvavidas", "Seguro de viaje", "Equipaje incluido"],
+    popular: false,
+    multiStop: true,
+    schedules: [
+      { vessel: "Sur Profundo", vesselType: "Lancha Rápida", departure: "05:30", arrival: "10:00", capacity: 20, available: 14, price: "150.000" },
+    ],
+  },
+  {
+    id: 9,
+    name: "Ruta Iscuandé Delta",
+    from: "Buenaventura",
+    fromDept: "Valle del Cauca",
+    to: "Iscuandé",
+    toDept: "Nariño",
+    stops: ["El Charco", "Mosquera"],
+    stopTimes: [
+      { stop: "El Charco", duration: "3h" },
+      { stop: "Mosquera", duration: "4h" },
+    ],
+    duration: "5 horas",
+    frequency: "Miércoles, Sábado",
+    price: "140.000",
+    vessel: "Lancha Local",
+    capacity: "18 pasajeros",
+    features: ["Chaleco salvavidas", "Seguro de viaje"],
+    popular: false,
+    multiStop: true,
+    schedules: [
+      { vessel: "Delta Express", vesselType: "Lancha Local", departure: "06:00", arrival: "11:00", capacity: 18, available: 10, price: "140.000" },
     ],
   },
 ]
@@ -239,21 +374,76 @@ export function RoutesSection() {
                   </div>
                 </div>
 
-                {/* Stops */}
+                {/* Stops with Timeline Visualization */}
                 <div className="mb-4">
                   <div className="text-xs text-muted-foreground uppercase tracking-wide mb-2">
                     Paradas intermedias
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {route.stops.map((stop, idx) => (
-                      <span
-                        key={idx}
-                        className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded-full"
-                      >
-                        {stop}
-                      </span>
-                    ))}
-                  </div>
+
+                  {route.multiStop ? (
+                    <>
+                      {/* Timeline Visualization */}
+                      <div className="relative flex items-center gap-0.5 overflow-x-auto py-2">
+                        {/* Origin */}
+                        <div className="flex flex-col items-center shrink-0">
+                          <div className="w-3 h-3 rounded-full bg-primary ring-2 ring-primary/20" />
+                          <span className="text-[10px] text-muted-foreground mt-1 whitespace-nowrap">
+                            {route.from.split(" ")[0]}
+                          </span>
+                        </div>
+
+                        {/* Route line and stops */}
+                        {route.stops.map((stop, idx) => (
+                          <div key={idx} className="flex items-center">
+                            <div className="flex-1 h-0.5 bg-gradient-to-r from-primary via-teal-400 to-teal-500 min-w-[20px]" />
+                            <div className="flex flex-col items-center shrink-0">
+                              <div className="w-2.5 h-2.5 rounded-full bg-teal-500 ring-2 ring-teal-500/20" />
+                              <span className="text-[10px] text-muted-foreground mt-1 whitespace-nowrap">
+                                {stop.split(" ")[0]}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+
+                        {/* Final line to destination */}
+                        <div className="flex-1 h-0.5 bg-gradient-to-r from-teal-500 to-secondary min-w-[20px]" />
+
+                        {/* Destination */}
+                        <div className="flex flex-col items-center shrink-0">
+                          <div className="w-3 h-3 rounded-full bg-secondary ring-2 ring-secondary/20" />
+                          <span className="text-[10px] text-muted-foreground mt-1 whitespace-nowrap">
+                            {route.to.split(" ")[0]}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Stop badges with times */}
+                      <div className="flex flex-wrap gap-1.5 mt-1">
+                        {route.stops.map((stop, idx) => (
+                          <Badge key={idx} variant="outline" className="text-[10px] font-normal">
+                            <MapPin className="w-3 h-3 mr-1 text-teal-500" />
+                            {stop}
+                            {route.stopTimes?.[idx] && (
+                              <span className="ml-1 text-muted-foreground">
+                                ({route.stopTimes[idx].duration})
+                              </span>
+                            )}
+                          </Badge>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {route.stops.map((stop, idx) => (
+                        <span
+                          key={idx}
+                          className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded-full"
+                        >
+                          {stop}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Details Grid */}

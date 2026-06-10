@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Menu, X, User, Globe, ChevronDown, LogOut } from "lucide-react"
+import { Menu, X, User, Globe, ChevronDown, LogOut, Building2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -36,6 +36,13 @@ export function Header() {
     { href: "/operadores", label: "Operadores" },
     { href: "/nosotros", label: "Nosotros" },
   ]
+
+  const userMenuItems = user
+    ? [
+        { href: "/perfil", label: "Mi Perfil", icon: User },
+        { href: "/dashboard-empresa", label: "Dashboard Empresa", icon: Building2 },
+      ]
+    : []
 
   useEffect(() => {
     const supabase = createClient()
@@ -148,6 +155,12 @@ export function Header() {
                       Mi Perfil
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard-empresa" className="cursor-pointer">
+                      <Building2 className="w-4 h-4 mr-2" />
+                      Dashboard Empresa
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut} className="text-destructive cursor-pointer">
                     <LogOut className="w-4 h-4 mr-2" />
@@ -156,12 +169,20 @@ export function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button variant="ghost" size="sm" className="gap-2" asChild>
-                <Link href="/iniciar-sesion">
-                  <User className="w-4 h-4" />
-                  Iniciar Sesión
-                </Link>
-              </Button>
+              <>
+                <Button variant="ghost" size="sm" className="gap-2" asChild>
+                  <Link href="/iniciar-sesion">
+                    <User className="w-4 h-4" />
+                    Iniciar Sesión
+                  </Link>
+                </Button>
+                <Button variant="outline" size="sm" className="gap-2" asChild>
+                  <Link href="/registro-empresa">
+                    <Building2 className="w-4 h-4" />
+                    Registrar Empresa
+                  </Link>
+                </Button>
+              </>
             )}
             
             <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
@@ -220,9 +241,15 @@ export function Header() {
                       Mi Perfil
                     </Link>
                   </Button>
-                  <Button 
-                    variant="ghost" 
-                    className="w-full gap-2 text-destructive hover:text-destructive" 
+                  <Button variant="outline" className="w-full gap-2" asChild>
+                    <Link href="/dashboard-empresa" onClick={() => setIsMenuOpen(false)}>
+                      <Building2 className="w-4 h-4" />
+                      Dashboard Empresa
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full gap-2 text-destructive hover:text-destructive"
                     onClick={() => {
                       handleSignOut()
                       setIsMenuOpen(false)
@@ -233,12 +260,20 @@ export function Header() {
                   </Button>
                 </>
               ) : (
-                <Button variant="outline" className="w-full gap-2" asChild>
-                  <Link href="/iniciar-sesion" onClick={() => setIsMenuOpen(false)}>
-                    <User className="w-4 h-4" />
-                    Iniciar Sesión
-                  </Link>
-                </Button>
+                <>
+                  <Button variant="outline" className="w-full gap-2" asChild>
+                    <Link href="/iniciar-sesion" onClick={() => setIsMenuOpen(false)}>
+                      <User className="w-4 h-4" />
+                      Iniciar Sesión
+                    </Link>
+                  </Button>
+                  <Button variant="ghost" className="w-full gap-2" asChild>
+                    <Link href="/registro-empresa" onClick={() => setIsMenuOpen(false)}>
+                      <Building2 className="w-4 h-4" />
+                      Registrar Empresa
+                    </Link>
+                  </Button>
+                </>
               )}
               <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
                 <Link href="/reserva" onClick={() => setIsMenuOpen(false)}>

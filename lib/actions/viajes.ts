@@ -71,17 +71,82 @@ export async function getOrigenes(): Promise<string[]> {
 
 export async function getDestinos(origen?: string): Promise<string[]> {
   const supabase = await createClient()
-  
+
   let query = supabase.from("viajes").select("destino")
-  
+
   if (origen && origen !== "todos") {
     query = query.eq("origen", origen)
   }
-  
+
   const { data, error } = await query
-  
+
   if (error || !data) return []
-  
+
   const destinos = [...new Set(data.map((v) => v.destino))]
   return destinos.sort()
+}
+
+export async function getViajeById(id: string) {
+  const supabase = await createClient()
+
+  const { data: viaje, error } = await supabase
+    .from("viajes")
+    .select(`
+      *,
+      empresas (
+        id,
+        nombre,
+        logo_url,
+        verificada
+      )
+    `)
+    .eq("id", id)
+    .single()
+
+  if (error) return null
+  return viaje
+}
+
+export async function getViajesByOperador(operadorNombre: string) {
+  const supabase = await createClient()
+
+  const { data: viajes, error } = await supabase
+    .from("viajes")
+    .select(`
+      *,
+      empresas (
+        id,
+        nombre,
+        logo_url,
+        verificada
+      )
+    `)
+    .eq("operador", operadorNombre)
+    .eq("activo", true)
+    .order("fecha", { ascending: true })
+
+  if (error) return []
+  return viajes
+}
+
+export async function getViajesByDestino(destino: string) {
+  const supabase = await createClient()
+
+  const { data: viajes, error } = await supabase
+    .from("viajes")
+    .select(`
+      *,
+      empresas (
+        id,
+        nombre,
+        logo_url,
+        verificada
+      )
+    `)
+    .or(`destino.ilike.%${destino}%,origen.ilike.%${destino}%`)
+    .eq("activo", true)
+    .order("fecha", { ascending: true })
+
+  if (error) return []
+  return viajes
 }
