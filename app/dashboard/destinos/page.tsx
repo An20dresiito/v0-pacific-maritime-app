@@ -1,9 +1,12 @@
 'use client'
 
-import { MapPin, Waves, Users, TrendingUp } from 'lucide-react'
+import { useState } from 'react'
+import { MapPin, Waves, Users, TrendingUp, Ship, Clock } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { ReservationModal } from '@/components/reservation-modal'
+import { useAuth } from '@/lib/auth-context'
 
 const DESTINOS = [
   {
@@ -75,6 +78,52 @@ const DESTINOS = [
 ]
 
 export default function DestinosPage() {
+  const { user } = useAuth()
+  const [selectedDestination, setSelectedDestination] = useState<any>(null)
+  const [isReservationOpen, setIsReservationOpen] = useState(false)
+
+  // Rutas disponibles en destinos (simuladas)
+  const RUTAS_POR_DESTINO: Record<number, Array<{
+    id: string
+    operator: string
+    vesselType: 'Lancha' | 'Ferry'
+    time: string
+    date: string
+  }>> = {
+    1: [
+      { id: 'R1', operator: 'Transportes Pacifico', vesselType: 'Lancha', time: '08:00', date: '2026-06-15' },
+      { id: 'R2', operator: 'Ferry del Pacífico', vesselType: 'Ferry', time: '14:00', date: '2026-06-15' },
+      { id: 'R3', operator: 'Lanchas Rápidas', vesselType: 'Lancha', time: '18:00', date: '2026-06-15' },
+    ],
+    2: [
+      { id: 'R4', operator: 'Transportes Pacifico', vesselType: 'Lancha', time: '09:00', date: '2026-06-16' },
+      { id: 'R5', operator: 'Ferry del Pacífico', vesselType: 'Ferry', time: '15:00', date: '2026-06-16' },
+    ],
+    3: [
+      { id: 'R6', operator: 'Lanchas Rápidas', vesselType: 'Lancha', time: '07:00', date: '2026-06-17' },
+      { id: 'R7', operator: 'Ferry del Pacífico', vesselType: 'Ferry', time: '13:00', date: '2026-06-17' },
+    ],
+    4: [
+      { id: 'R8', operator: 'Transportes Pacifico', vesselType: 'Lancha', time: '08:30', date: '2026-06-18' },
+      { id: 'R9', operator: 'Ferry del Pacífico', vesselType: 'Ferry', time: '14:30', date: '2026-06-18' },
+    ],
+    5: [
+      { id: 'R10', operator: 'Lanchas Rápidas', vesselType: 'Lancha', time: '06:00', date: '2026-06-19' },
+    ],
+    6: [
+      { id: 'R11', operator: 'Transportes Pacifico', vesselType: 'Ferry', time: '12:00', date: '2026-06-20' },
+    ],
+  }
+
+  const handleReserve = (destination: typeof DESTINOS[0], ruta: any) => {
+    setSelectedDestination({
+      ...destination,
+      from: destination.nombre,
+      to: destination.nombre, // En el caso de destinos, es el mismo puerto (simplificado)
+      ...ruta,
+    })
+    setIsReservationOpen(true)
+  }
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -134,41 +183,58 @@ export default function DestinosPage() {
               </div>
 
               {/* Botón */}
-              <Button className="w-full bg-primary hover:bg-primary/90 text-white">
+              <Button className="w-full bg-primary hover:bg-primary/90 text-white" onClick={() => setSelectedDestination(destino)}>
                 Ver Rutas Disponibles
               </Button>
+
+              {/* Rutas disponibles en este destino */}
+              <div className="mt-6 pt-6 border-t border-border">
+                <h4 className="font-bold text-foreground mb-3 flex items-center gap-2">
+                  <Ship className="w-4 h-4" />
+                  Rutas disponibles
+                </h4>
+                <div className="space-y-2">
+                  {(RUTAS_POR_DESTINO[destino.id] || []).map((ruta) => (
+                    <div
+                      key={ruta.id}
+                      className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-border hover:bg-slate-100 transition-colors"
+                    >
+                      <div className="flex-1 flex items-center gap-4">
+                        <div className="flex items-center gap-2 text-sm">
+                          <Clock className="w-4 h-4 text-muted-foreground" />
+                          <span className="font-semibold">{ruta.time}</span>
+                        </div>
+                        <Badge variant="outline">{ruta.vesselType}</Badge>
+                        <span className="text-sm text-muted-foreground">{ruta.operator}</span>
+                      </div>
+                      <Button
+                        size="sm"
+                        onClick={() => handleReserve(destino, ruta)}
+                        className="ml-2"
+                      >
+                        Reservar
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* Información adicional */}
-      <Card className="bg-slate-50 border-slate-200">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="w-5 h-5" />
-            Información de Destinos
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <h4 className="font-semibold text-slate-900 mb-2">Mejor época para viajar</h4>
-            <p className="text-sm text-slate-600">
-              Diciembre a marzo: épocas de menor precipitación. Junio a noviembre: temporada de avistamiento de ballenas.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-slate-900 mb-2">Recomendaciones</h4>
-            <ul className="text-sm text-slate-600 space-y-1">
-              <li>✓ Llevar protector solar y repelente de mosquitos</li>
-              <li>✓ Documentación: cédula de ciudadanía (ciudadanos colombianos)</li>
-              <li>✓ Consultar condiciones marítimas antes de viajar</li>
-              <li>✓ Reservar con anticipación en temporada alta</li>
-            </ul>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Modal de Reserva */}
+      {selectedDestination && (
+        <ReservationModal
+          open={isReservationOpen}
+          onClose={() => {
+            setIsReservationOpen(false)
+            setSelectedDestination(null)
+          }}
+          destination={selectedDestination}
+          userName={user?.nombre_completo || 'Viajero'}
+        />
+      )}
     </div>
   )
 }
