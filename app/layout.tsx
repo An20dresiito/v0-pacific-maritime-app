@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import { DM_Sans, Playfair_Display } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
-import { Header } from '@/components/header'
-import { Footer } from '@/components/footer'
+import { AuthProvider } from '@/lib/auth-context'
 import './globals.css'
 
 const dmSans = DM_Sans({ 
@@ -15,8 +14,8 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: 'PACIFICCONNECT | Transporte Marítimo del Pacífico Colombiano',
-  description: 'Plataforma digital que conecta el Chocó, Nariño, Cauca y Valle del Cauca por vía marítima. Reserva tu cupo en embarcaciones verificadas y seguras.',
+  title: 'PacificConnect | Dashboard de Transporte Marítimo',
+  description: 'Plataforma digital integral para gestión de transporte marítimo en el Pacífico colombiano.',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -45,11 +44,9 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${dmSans.variable} ${playfair.variable} bg-background`}>
       <body className="font-sans antialiased">
-        <Header />
-        <main className="min-h-screen pt-20 md:pt-24">
+        <AuthProvider>
           {children}
-        </main>
-        <Footer />
+        </AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
